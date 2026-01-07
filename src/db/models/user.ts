@@ -1,0 +1,39 @@
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../index';
+
+export class User extends Model {
+  declare id: number;
+  declare userId: number;
+  declare service: string;
+  declare username: number;
+}
+
+User.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    service: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    tableName: 'users',
+    timestamps: true,
+    underscored: true,
+  },
+);
+
+export default User;
