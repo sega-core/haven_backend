@@ -1,8 +1,10 @@
+/* import { authMiddleware } from './../middlewares/authMiddleware'; */
 import { Router } from "express";
-import { createBlagodarnost } from "../controllers/blagodarnost.controller";
+import { createBlagodarnost, getBlagodarnost } from "../controllers/blagodarnost.controller";
 
 const router = Router();
 
-router.post("/", createBlagodarnost);
+router.post("/blagodarnost", createBlagodarnost);
+router.get("/blagodarnost", getBlagodarnost);
 
 export default router;

@@ -1,13 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
 
-export class Blagodarnost extends Model {
+export class Nastroenie extends Model {
   declare id: number;
   declare userId: number;
-  declare text: string;
+  declare level: number;
+  declare tag: string;
+  declare comment:string
 }
 
-Blagodarnost.init(
+Nastroenie.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -18,8 +20,17 @@ Blagodarnost.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    text: {
-      type: DataTypes.STRING(1000),
+     level: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: { min: 1, max: 5 },
+    },
+    tag: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    comment: {
+      type: DataTypes.STRING(500),
       allowNull: false,
     },
   },

@@ -1,17 +1,32 @@
 import { Blagodarnost } from "../db/models/blagodarnost";
-import { formatISO } from "date-fns";
 
-export async function upsertTodayBlagodarnost(
-  userId: number,
-  text: string
-) {
-  const today = formatISO(new Date(), { representation: "date" });
+import { Op } from 'sequelize';
+import { startOfDay, endOfDay } from 'date-fns';
 
-  const [record] = await Blagodarnost.upsert({
+
+
+export const create = async (userId: number, text: string) => {
+  const record = await Blagodarnost.create({
     userId,
-    date: today,
-    text,
+    text
   });
 
   return record;
+}
+
+export const getForCurrentDay = async (userId: number) => {
+  const todayStart = startOfDay(new Date());
+  const todayEnd = endOfDay(new Date());
+
+  const items = await Blagodarnost.findAll({
+    where: {
+      userId,
+      createdAt: {
+        [Op.between]: [todayStart, todayEnd],
+      },
+    },
+    order: [['createdAt', 'ASC']],
+  });
+
+  return items;
 }

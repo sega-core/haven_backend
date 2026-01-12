@@ -1,17 +1,26 @@
 import express from 'express';
-import { errorHandler } from './middlewares/errorHandler';
-import { authMiddleware } from './middlewares/authMiddleware';
+import blagodarnostRoute from './routes/blagodarnost.routes';
+import { NotFoundError } from './utils/error.utils';
+import { errorHandler } from './middlewares/error.middleware';
 
 const app = express();
 
 app.use(express.json());
 
-/* app.use(authMiddleware({ telegramBotToken: BOT_TOKEN })); */
+const routes = [
+  blagodarnostRoute,
+];
 
-// Routes
-/* app.use('/api/items', itemRoutes); */
 
-// Global error handler (should be after routes)
+routes.forEach((router) => {
+  app.use("/api", router);
+});
+
+
+app.use('*', (_req, _res, next) => {
+  next(new NotFoundError('Маршрут'));
+});
+
 app.use(errorHandler);
 
 export default app;

@@ -1,17 +1,44 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
-  upsertTodayBlagodarnost,
+  create,
+  getForCurrentDay
 } from "../services/blagodarnost.service";
+import { ValidationError } from "../utils/error.utils";
+import { asyncHandler } from "../decorators/asyncHandler";
 
-export async function createBlagodarnost(req: Request, res: Response) {
-  const userId = req.user.id; // из auth middleware
-  const { text } = req.body;
+let userId = 4;
+/* const userId = req?.user?.userId;  */// из auth middleware TODO
 
-  if (!text || text.length > 1000) {
-    return res.status(400).json({ message: "Invalid text" });
+
+export const createBlagodarnost = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { text } = req.body;
+
+    if (!text) {
+      throw new ValidationError('Поле text обязательно', 'text');
+
+    }
+    if (text.length > 1000) {
+      throw new ValidationError('Текст не должен быть больше 1000 символов', 'text');
+
+    }
+
+    const result = await create(userId, text);
+
+    res.json(result);
+  } catch (error) {
+    next(error);
   }
 
-  const result = await upsertTodayBlagodarnost(userId, text);
+})
 
-  res.json(result);
-}
+
+export const getBlagodarnost = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await getForCurrentDay(userId);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+  
+})

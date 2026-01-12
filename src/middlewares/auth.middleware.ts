@@ -14,6 +14,7 @@ export type AuthenticatedUser = {
 // Telegram Mini App проверка подписи
 const telegramAuth = (botToken: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
+    console.log('telegramAuthtelegramAuthtelegramAuthtelegramAuthtelegramAuth')
     const { query } = req;
 
     if (!query || !query.hash) {
@@ -36,21 +37,28 @@ const telegramAuth = (botToken: string) => {
       return res.status(401).json({ message: "Unauthorized: Invalid Telegram signature" });
     }
 
-    req.user = {
+    /* req.user = {
       service: "telegram",
+      userId:1,
+      id:1,
       ...query,
-    } as AuthenticatedUser;
+    } as AuthenticatedUser; */
+
+   req.user = { userId: 1 };
+
 
     next();
   };
 };
 
 export const authMiddleware = (options: { telegramBotToken: string; vkClientId?: string; vkClientSecret?: string }) => {
+  console.log('authMiddleware')
   return (req: Request, res: Response, next: NextFunction) => {
     // Telegram проверка
-    if (req.query && req.query.hash) {
+    console.log('authMiddleware2')
+   /*  if (req.query && req.query.hash) {
       return telegramAuth(options.telegramBotToken)(req, res, next);
-    }
+    } */
 /* 
     if (req.headers["x-vk-token"] && options.vkClientId && options.vkClientSecret) {
       return vkAuth(options.vkClientId, options.vkClientSecret)(req, res, next);
