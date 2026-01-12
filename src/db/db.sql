@@ -1,32 +1,43 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
-  service VARCHAR(50) NOT NULL,
+  platform_id INTEGER NOT NULL,
+  platform VARCHAR(50) NOT NULL,
   username VARCHAR(50) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE blagodarnost (
+CREATE TABLE gratitude (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   text VARCHAR(1000) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  CONSTRAINT blagodarnost_text_length CHECK (char_length(text) <= 1000)
 );
 
-CREATE TABLE nastroenie (
+CREATE TABLE mood (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  nastroenie_level SMALLINT NOT NULL CHECK (nastroenie_level BETWEEN 1 AND 5),
+  level SMALLINT NOT NULL CHECK (level BETWEEN 1 AND 5),
+  tags TEXT[] DEFAULT '{}',
   comment TEXT,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 );
 
-CREATE TABLE nastroenie_tags (
+CREATE TABLE daily_questions (
   id SERIAL PRIMARY KEY,
-  nastroenie_entry_id INTEGER NOT NULL REFERENCES nastroenie(id) ON DELETE CASCADE,
-  tag VARCHAR(100) NOT NULL
+  question TEXT NOT NULL UNIQUE,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 );
 
+CREATE TABLE user_daily_questions (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  question_id INTEGER NOT NULL REFERENCES daily_questions(id),
+  answer VARCHAR(1000) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+);

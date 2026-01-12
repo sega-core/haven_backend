@@ -1,15 +1,16 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
 
-export class Nastroenie extends Model {
+export class Mood extends Model {
   declare id: number;
   declare userId: number;
   declare level: number;
+  declare tags: string[];
   declare tag: string;
-  declare comment:string
+  declare comment: string;
 }
 
-Nastroenie.init(
+Mood.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -20,14 +21,15 @@ Nastroenie.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-     level: {
+    level: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: { min: 1, max: 5 },
     },
-    tag: {
-      type: DataTypes.STRING,
+    tags: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
+      defaultValue: [],
     },
     comment: {
       type: DataTypes.STRING(500),
@@ -36,8 +38,8 @@ Nastroenie.init(
   },
   {
     sequelize,
-    tableName: 'blagodarnost',
+    tableName: 'mood',
     timestamps: true,
     underscored: true,
-  }
+  },
 );

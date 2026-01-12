@@ -1,24 +1,22 @@
-import { Blagodarnost } from "../db/models/blagodarnost";
+import { Gratitude } from '../db/models';
 
 import { Op } from 'sequelize';
 import { startOfDay, endOfDay } from 'date-fns';
 
-
-
 export const create = async (userId: number, text: string) => {
-  const record = await Blagodarnost.create({
+  const record = await Gratitude.create({
     userId,
-    text
+    text,
   });
 
   return record;
-}
+};
 
 export const getForCurrentDay = async (userId: number) => {
   const todayStart = startOfDay(new Date());
   const todayEnd = endOfDay(new Date());
 
-  const items = await Blagodarnost.findAll({
+  const items = await Gratitude .findAll({
     where: {
       userId,
       createdAt: {
@@ -29,4 +27,4 @@ export const getForCurrentDay = async (userId: number) => {
   });
 
   return items;
-}
+};

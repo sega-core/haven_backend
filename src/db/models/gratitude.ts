@@ -1,13 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
 
-export class Blagodarnost extends Model {
+export class Gratitude extends Model {
   declare id: number;
   declare userId: number;
   declare text: string;
 }
 
-Blagodarnost.init(
+Gratitude.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -25,7 +25,7 @@ Blagodarnost.init(
   },
   {
     sequelize,
-    tableName: 'blagodarnost',
+    tableName: 'gratitude',
     timestamps: true,
     underscored: true,
   }
