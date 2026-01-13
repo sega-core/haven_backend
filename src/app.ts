@@ -1,8 +1,11 @@
 import express from 'express';
 import gratitudeRoute from './routes/gratitude.routes';
-import nastroenieRoute from './routes/nastroenie.routes';
+import moodRoute from './routes/mood.routes';
+import dailyQuestionRoute from './routes/dailyQuestion.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
+
+export const TEMP_USER_ID = 1;
 
 const app = express();
 
@@ -10,7 +13,8 @@ app.use(express.json());
 
 const routes = [
   gratitudeRoute,
-  nastroenieRoute
+  moodRoute,
+  dailyQuestionRoute
 ];
 
 

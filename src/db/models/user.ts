@@ -11,15 +11,15 @@ export class User extends Model {
 User.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       primaryKey: true,
       autoIncrement: true,
     },
-    userId: {
-      type: DataTypes.INTEGER,
+    platformId: {
+      type: DataTypes.BIGINT,
       allowNull: false,
     },
-    service: {
+    platform: {
       type: DataTypes.STRING,
       allowNull: false,
     },

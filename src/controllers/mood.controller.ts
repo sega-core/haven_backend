@@ -3,8 +3,7 @@ import { create, getForCurrentDay } from '../services/mood.service';
 import { ValidationError } from '../utils/error.utils';
 import { asyncHandler } from '../decorators/asyncHandler';
 import { MOOD_TAGS_MAP } from '../constants/mood.constant';
-
-let userId = 4;
+import { TEMP_USER_ID } from '../app';
 
 export const createMood = asyncHandler(
   async (
@@ -42,7 +41,7 @@ export const createMood = asyncHandler(
         );
       }
 
-      const result = await create(userId, level, tags, comment);
+      const result = await create(TEMP_USER_ID, level, tags, comment);
       res.json(result);
     } catch (error) {
       next(error);
@@ -53,7 +52,7 @@ export const createMood = asyncHandler(
 export const getMood = asyncHandler(
   async (_req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await getForCurrentDay(userId);
+      const result = await getForCurrentDay(TEMP_USER_ID);
       res.json(result);
     } catch (error) {
       next(error);

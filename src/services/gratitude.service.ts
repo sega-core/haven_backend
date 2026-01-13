@@ -16,7 +16,7 @@ export const getForCurrentDay = async (userId: number) => {
   const todayStart = startOfDay(new Date());
   const todayEnd = endOfDay(new Date());
 
-  const items = await Gratitude .findAll({
+  const items = await Gratitude.findAll({
     where: {
       userId,
       createdAt: {

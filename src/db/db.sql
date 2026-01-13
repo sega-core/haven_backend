@@ -1,6 +1,6 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  platform_id INTEGER NOT NULL,
+  platform_id BIGINT NOT NULL,
   platform VARCHAR(50) NOT NULL,
   username VARCHAR(50) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -12,7 +12,7 @@ CREATE TABLE gratitude (
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   text VARCHAR(1000) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE TABLE mood (
@@ -22,22 +22,21 @@ CREATE TABLE mood (
   tags TEXT[] DEFAULT '{}',
   comment TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE daily_questions (
+CREATE TABLE daily_question (
   id SERIAL PRIMARY KEY,
   question TEXT NOT NULL UNIQUE,
-  is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE user_daily_questions (
+CREATE TABLE user_daily_question (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  question_id INTEGER NOT NULL REFERENCES daily_questions(id),
+  question_id INTEGER NOT NULL REFERENCES daily_question(id),
   answer VARCHAR(1000) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
