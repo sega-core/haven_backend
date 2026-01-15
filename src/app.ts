@@ -2,6 +2,7 @@ import express from 'express';
 import gratitudeRoute from './routes/gratitude.routes';
 import moodRoute from './routes/mood.routes';
 import dailyQuestionRoute from './routes/dailyQuestion.routes';
+import targetRoute from './routes/target.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
 
@@ -14,7 +15,8 @@ app.use(express.json());
 const routes = [
   gratitudeRoute,
   moodRoute,
-  dailyQuestionRoute
+  dailyQuestionRoute,
+  targetRoute
 ];
 
 
