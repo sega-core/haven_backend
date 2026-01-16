@@ -1,7 +1,13 @@
 import { Target, TargetCompletion } from '../db/models';
 
 import { ValidationError } from '../utils/error.utils';
-import { startOfDay, getDay, differenceInDays, format } from 'date-fns';
+import {
+  startOfDay,
+  getDay,
+  differenceInDays,
+  format,
+  eachDayOfInterval,
+} from 'date-fns';
 
 const WEEKDAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
@@ -47,6 +53,8 @@ export const markDone = async (
 ) => {
   const target = await TargetCompletion.findOne({ where: { targetId, date } });
 
+  //TODO: сделать недоступность отметки в неположенную дату, пока ограничения только на ui
+
   if (target?.completed) {
     throw new ValidationError('Цель на сегодня уже завершена');
   }
@@ -67,13 +75,11 @@ export const get = async (userId: number) => {
       {
         model: TargetCompletion,
         as: 'TargetCompletion',
-        /* attributes: ['date', 'completed'], */
+        attributes: ['date', 'completed'],
         required: false,
       },
     ],
   });
-
-  console.log('result', '\n\n', JSON.stringify(targets), '\n\n');
 
   const targetsWithProgress = await Promise.all(
     targets.map(async (target) => {
@@ -110,16 +116,33 @@ export const getForWeekday = async (userId: number) => {
 export const calculateTargetProgress = async (target: Target) => {
   const startDate = new Date(target.startDate);
   const endDate = new Date(target.endDate);
-
-  const totalDays = Math.max(differenceInDays(endDate, startDate) + 1, 0);
+  const today = format(new Date(), 'yyyy-MM-dd')
 
   const completionDates =
     target.TargetCompletion?.map((item) => format(item.date, 'yyyy-MM-dd')) ||
     [];
 
   const completedDays = completionDates.length;
+
+  const numericWeekdays = target.weekdays
+    .map((day) => WEEKDAY_KEYS.indexOf(day.toLowerCase()))
+    .filter((index) => index !== -1);
+
+  const allDays = eachDayOfInterval({
+    start: startDate,
+    end: endDate,
+  }).map((day) => format(day, 'yyyy-MM-dd'));
+
+  const relevantDays = allDays.filter(day => {
+    const dayOfWeek = getDay(day);
+
+    return numericWeekdays.includes(dayOfWeek);
+  });
+
   const completionRate =
-    totalDays > 0 ? Math.round((completedDays / totalDays) * 100) : 0;
+    relevantDays.length > 0 ? Math.round((completedDays / relevantDays.length) * 100) : 0;
+  
+  const completedToday = !!completionDates.find((item=>item === today))
 
   return {
     id: target.id,
@@ -128,8 +151,9 @@ export const calculateTargetProgress = async (target: Target) => {
     endDate: target.endDate,
     weekdays: target.weekdays,
     notifyTime: target.notifyTime,
-    totalDays,
     completedDays,
     completionRate,
+    relevantDays,
+    completedToday,
   };
 };
