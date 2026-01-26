@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { create, getForCurrentDay } from '../services/gratitude.service';
+import { createGratitudeService } from '../services/gratitude.service';
 import { ValidationError } from '../utils/error.utils';
 import { asyncHandler } from '../decorators/asyncHandler';
 import { TEMP_USER_ID } from '../app';
@@ -8,33 +8,22 @@ import { TEMP_USER_ID } from '../app';
 
 export const createGratitude = asyncHandler(
   async (
-    req: Request<{}, {}, { text: string }>,
+    req: Request<{}, {}, { comment: string }>,
     res: Response,
     next: NextFunction,
   ) => {
     try {
-      const { text } = req.body;
+      const { comment } = req.body;
 
-      if (!text) {
-        throw new ValidationError('Поле text обязательно');
+      if (!comment) {
+        throw new ValidationError('Поле comment обязательно');
       }
-      if (text.length > 1000) {
+      if (comment.length > 1000) {
         throw new ValidationError('Текст не должен быть больше 1000 символов');
       }
 
-      const result = await create(TEMP_USER_ID, text);
+      const result = await createGratitudeService(TEMP_USER_ID, comment);
 
-      res.json(result);
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
-export const getGratitude = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await getForCurrentDay(TEMP_USER_ID);
       res.json(result);
     } catch (error) {
       next(error);

@@ -4,7 +4,7 @@ import { sequelize } from '../index';
 export class Gratitude extends Model {
   declare id: number;
   declare userId: number;
-  declare text: string;
+  declare comment: string;
 }
 
 Gratitude.init(
@@ -18,7 +18,7 @@ Gratitude.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    text: {
+    comment: {
       type: DataTypes.STRING(1000),
       allowNull: false,
     },

@@ -3,7 +3,7 @@ import { DailyQuestion, UserDailyQuestion } from '../db/models';
 import { Op } from 'sequelize';
 import { ValidationError } from '../utils/error.utils';
 
-export const getTodayQuestion = async (userId: number) => {
+export const getDaylyQuestionService = async (userId: number) => {
   const count = await DailyQuestion.count();
 
   if (count === 0) {
@@ -33,10 +33,12 @@ export const getTodayQuestion = async (userId: number) => {
   });
 
   if (!question) {
-     throw new ValidationError('Вопрос не найден');
+    throw new ValidationError('Вопрос не найден');
   }
-  
-  const userAnswer = question.UserDailyQuestion?.[0]?.answer || null;
+
+  const userAnswer = question.UserDailyQuestion?.[0]?.answer || '';
+  const createdAt = question.UserDailyQuestion?.[0]?.createdAt || '';
+
   const hasAnswered = !!question.UserDailyQuestion?.[0];
 
   return {
@@ -44,11 +46,12 @@ export const getTodayQuestion = async (userId: number) => {
     question: question.question,
     userAnswer,
     hasAnswered,
+    createdAt,
   };
 };
 
-export const createTodayAnswer = async (userId: number, answer: string) => {
-  const { questionId, hasAnswered } = await getTodayQuestion(userId);
+export const createAnswerService = async (userId: number, answer: string) => {
+  const { questionId, hasAnswered } = await getDaylyQuestionService(userId);
 
   if (hasAnswered) {
     throw new ValidationError('Пользователь уже ответил на этот вопрос');

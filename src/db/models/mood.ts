@@ -6,7 +6,6 @@ export class Mood extends Model {
   declare userId: number;
   declare level: number;
   declare tags: string[];
-  declare tag: string;
   declare comment: string;
 }
 

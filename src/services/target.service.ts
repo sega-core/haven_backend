@@ -4,7 +4,6 @@ import { ValidationError } from '../utils/error.utils';
 import {
   startOfDay,
   getDay,
-  differenceInDays,
   format,
   eachDayOfInterval,
 } from 'date-fns';

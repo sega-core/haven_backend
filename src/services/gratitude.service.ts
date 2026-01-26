@@ -3,16 +3,16 @@ import { Gratitude } from '../db/models';
 import { Op } from 'sequelize';
 import { startOfDay, endOfDay } from 'date-fns';
 
-export const create = async (userId: number, text: string) => {
+export const createGratitudeService = async (userId: number, comment: string) => {
   const record = await Gratitude.create({
     userId,
-    text,
+    comment,
   });
 
   return record;
 };
 
-export const getForCurrentDay = async (userId: number) => {
+export const getGratitudeService = async (userId: number) => {
   const todayStart = startOfDay(new Date());
   const todayEnd = endOfDay(new Date());
 

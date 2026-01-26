@@ -6,7 +6,8 @@ export class UserDailyQuestion extends Model {
   declare id: number;
   declare userId: number;
   declare questionId: number;
-  declare answer: number;
+  declare answer: string;
+  declare createdAt: string;
 }
 
 UserDailyQuestion.init(
