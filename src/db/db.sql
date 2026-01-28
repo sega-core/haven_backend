@@ -48,7 +48,7 @@ CREATE TABLE target (
   start_date DATE NOT NULL,
   end_date DATE NOT NULL,
   weekdays TEXT[] DEFAULT '{}',
-  notify_time TIME NOT NULL,
+  notify_time TIME,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

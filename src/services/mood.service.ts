@@ -1,5 +1,4 @@
 import { Mood } from '../db/models';
-
 import { Op } from 'sequelize';
 import { startOfDay, endOfDay } from 'date-fns';
 

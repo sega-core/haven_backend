@@ -1,16 +1,10 @@
 import { Target, TargetCompletion } from '../db/models';
-
 import { ValidationError } from '../utils/error.utils';
-import {
-  startOfDay,
-  getDay,
-  format,
-  eachDayOfInterval,
-} from 'date-fns';
+import { startOfDay, getDay, format, eachDayOfInterval } from 'date-fns';
 
 const WEEKDAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
-export const create = async (
+export const createTargetService = async (
   userId: number,
   data: {
     startDate: string;
@@ -27,7 +21,7 @@ export const create = async (
   return record;
 };
 
-export const update = async (
+export const updateTargetService = async (
   userId: number,
   id: number,
   data: {
@@ -45,7 +39,17 @@ export const update = async (
   return target.update(data);
 };
 
-export const markDone = async (
+export const deleteTargetService = async (userId: number, id: number) => {
+  const target = await Target.findOne({
+    where: { id, userId },
+  });
+
+  if (!target) throw new ValidationError('Цель не найдена');
+
+  return target.destroy();
+};
+
+export const markDoneTargetService = async (
   userId: number,
   targetId: number,
   date = startOfDay(new Date()),
@@ -66,7 +70,7 @@ export const markDone = async (
   });
 };
 
-export const get = async (userId: number) => {
+export const getTargetService = async (userId: number) => {
   const targets = await Target.findAll({
     where: { userId },
     order: [['created_at', 'DESC']],
@@ -82,40 +86,17 @@ export const get = async (userId: number) => {
 
   const targetsWithProgress = await Promise.all(
     targets.map(async (target) => {
-      return await calculateTargetProgress(target);
+      return await calcTargetProgressService(target);
     }),
   );
 
   return targetsWithProgress;
 };
 
-export const getForWeekday = async (userId: number) => {
-  const targets = await Target.findAll({
-    where: { userId },
-    order: [['created_at', 'DESC']],
-    include: [
-      {
-        model: TargetCompletion,
-        as: 'TargetCompletion',
-        attributes: ['date', 'completed'],
-        required: false,
-      },
-    ],
-  });
-
-  const targetsWithProgress = await Promise.all(
-    targets.map(async (target) => {
-      return await calculateTargetProgress(target);
-    }),
-  );
-
-  return targetsWithProgress;
-};
-
-export const calculateTargetProgress = async (target: Target) => {
+export const calcTargetProgressService = async (target: Target) => {
   const startDate = new Date(target.startDate);
   const endDate = new Date(target.endDate);
-  const today = format(new Date(), 'yyyy-MM-dd')
+  const today = format(new Date(), 'yyyy-MM-dd');
 
   const completionDates =
     target.TargetCompletion?.map((item) => format(item.date, 'yyyy-MM-dd')) ||
@@ -132,16 +113,20 @@ export const calculateTargetProgress = async (target: Target) => {
     end: endDate,
   }).map((day) => format(day, 'yyyy-MM-dd'));
 
-  const relevantDays = allDays.filter(day => {
+  const relevantDays = allDays.filter((day) => {
     const dayOfWeek = getDay(day);
 
     return numericWeekdays.includes(dayOfWeek);
   });
 
   const completionRate =
-    relevantDays.length > 0 ? Math.round((completedDays / relevantDays.length) * 100) : 0;
-  
-  const completedToday = !!completionDates.find((item=>item === today))
+    relevantDays.length > 0
+      ? Math.round((completedDays / relevantDays.length) * 100)
+      : 0;
+
+  const isCompletedToday = !!completionDates.find((item) => item === today);
+
+  const isCanCompletedToday = !!relevantDays.find((item) => item === today);
 
   return {
     id: target.id,
@@ -149,10 +134,11 @@ export const calculateTargetProgress = async (target: Target) => {
     startDate: target.startDate,
     endDate: target.endDate,
     weekdays: target.weekdays,
-    notifyTime: target.notifyTime,
+    notifyTime: target.notifyTime || '',
     completedDays,
     completionRate,
     relevantDays,
-    completedToday,
+    isCompletedToday,
+    isCanCompletedToday,
   };
 };

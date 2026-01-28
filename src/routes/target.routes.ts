@@ -1,16 +1,16 @@
 import { Router } from 'express';
 import {
   createTarget,
-  updateTarget,
   markDoneTarget,
-  getTarget
+  getTarget,
+  deleteTarget,
 } from '../controllers/target.controller';
 
 const router = Router();
 
 router.post('/target', createTarget);
-router.put('/target/:id', updateTarget);
 router.post('/target/:id/done', markDoneTarget);
+router.delete('/target/:id', deleteTarget);
 router.get('/target', getTarget);
 
 export default router;
