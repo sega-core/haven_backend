@@ -5,6 +5,7 @@ import moodRoute from './routes/mood.routes';
 import dailyQuestionRoute from './routes/dailyQuestion.routes';
 import targetRoute from './routes/target.routes';
 import progressRoute from './routes/progress.routes';
+import coinRoute from './routes/coin.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
 
@@ -25,7 +26,8 @@ const routes = [
   moodRoute,
   dailyQuestionRoute,
   targetRoute,
-  progressRoute
+  progressRoute,
+  coinRoute
 ];
 
 

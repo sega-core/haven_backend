@@ -45,8 +45,8 @@ CREATE TABLE target (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
-  start_date DATE NOT NULL,
-  end_date DATE NOT NULL,
+  start_date DATE NOT NULL, --YYYY-MM-DD
+  end_date DATE NOT NULL, --YYYY-MM-DD
   weekdays TEXT[] DEFAULT '{}',
   notify_time TIME,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -56,10 +56,30 @@ CREATE TABLE target (
 CREATE TABLE target_completion (
   id SERIAL PRIMARY KEY,
   target_id INTEGER NOT NULL REFERENCES target(id) ON DELETE CASCADE,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  date DATE NOT NULL,
-  completed BOOLEAN DEFAULT true,
+  date DATE NOT NULL, --YYYY-MM-DD
+  completed BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE (target_id, date)
+);
+
+CREATE TABLE coin_balance (
+  id BIGSERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  daily_streak INT NOT NULL DEFAULT 0,
+  last_bonus_at DATE NOT NULL, --YYYY-MM-DD
+  total INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE (user_id)
+);
+
+CREATE TABLE coin_transaction (
+  id BIGSERIAL PRIMARY KEY,
+  balance_id BIGINT NOT NULL REFERENCES coin_balance(id) ON DELETE CASCADE,
+  amount INT NOT NULL,
+  type VARCHAR(32) NOT NULL, -- DAILY_BONUS | SPEND
+  meta JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

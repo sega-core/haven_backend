@@ -35,7 +35,7 @@ export const markDoneTarget = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const targetId = req.params.id;
     try {
-      await markDoneTargetService(TEMP_USER_ID, Number(targetId));
+      await markDoneTargetService(Number(targetId));
       res.json({ success: true });
     } catch (error) {
       next(error);

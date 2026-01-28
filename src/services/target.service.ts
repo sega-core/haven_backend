@@ -50,7 +50,6 @@ export const deleteTargetService = async (userId: number, id: number) => {
 };
 
 export const markDoneTargetService = async (
-  userId: number,
   targetId: number,
   date = startOfDay(new Date()),
 ) => {
@@ -63,7 +62,6 @@ export const markDoneTargetService = async (
   }
 
   return TargetCompletion.upsert({
-    userId,
     targetId,
     date,
     completed: true,
