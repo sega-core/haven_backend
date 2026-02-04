@@ -4,7 +4,8 @@ CREATE TABLE users (
   platform VARCHAR(50) NOT NULL,
   username VARCHAR(50) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  UNIQUE (platform_id, platform)
 );
 
 CREATE TABLE gratitude (
@@ -35,7 +36,7 @@ CREATE TABLE daily_question (
 CREATE TABLE user_daily_question (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  question_id INTEGER NOT NULL REFERENCES daily_question(id),
+  question_id INTEGER NOT NULL REFERENCES daily_question(id) ON DELETE CASCADE,
   answer VARCHAR(1000) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -64,7 +65,7 @@ CREATE TABLE target_completion (
 );
 
 CREATE TABLE coin_balance (
-  id BIGSERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   daily_streak INT NOT NULL DEFAULT 0,
   last_bonus_at DATE NOT NULL, --YYYY-MM-DD
@@ -75,7 +76,7 @@ CREATE TABLE coin_balance (
 );
 
 CREATE TABLE coin_transaction (
-  id BIGSERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   balance_id BIGINT NOT NULL REFERENCES coin_balance(id) ON DELETE CASCADE,
   amount INT NOT NULL,
   type VARCHAR(32) NOT NULL, -- DAILY_BONUS | SPEND
@@ -83,3 +84,66 @@ CREATE TABLE coin_transaction (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+CREATE TABLE cash_transaction (
+  id SERIAL PRIMARY KEY,
+  amount INT NOT NULL,
+  type VARCHAR(32) NOT NULL, -- SPEND
+  meta JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE practice (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  sub_title VARCHAR(500) NOT NULL,
+  description TEXT NOT NULL,
+  tags TEXT[] DEFAULT '{}',
+  price_zen INT NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE purchase (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  practice_id INTEGER NOT NULL REFERENCES practice(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE practice_bundle (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  description TEXT NOT NULL,
+  price_rub INT NOT NULL,
+  tags TEXT[] DEFAULT '{}',
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+
+CREATE TABLE practice_bundle_item (
+  id SERIAL PRIMARY KEY,
+  bundle_id INTEGER NOT NULL REFERENCES practice_bundle(id) ON DELETE CASCADE,
+  practice_id INTEGER NOT NULL REFERENCES practice(id) ON DELETE CASCADE,
+  position INT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),  
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE (bundle_id, practice_id)
+);
+
+CREATE TABLE purchase_bundle (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  bundle_id INTEGER NOT NULL REFERENCES practice_bundle(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),  
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE (bundle_id)
+);
+
+
+--TODO: добавить индексы с таблицам--
