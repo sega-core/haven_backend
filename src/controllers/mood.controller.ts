@@ -5,6 +5,8 @@ import { asyncHandler } from '../decorators/asyncHandler';
 import { MOOD_TAGS_MAP } from '../constants/mood.constant';
 import { TEMP_USER_ID } from '../app';
 
+//TODO: перевести ошибки на англ
+
 export const createMood = asyncHandler(
   async (
     req: Request<{}, {}, { level: number; comment: string; tags: string[] }>,

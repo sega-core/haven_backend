@@ -1,37 +1,37 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
 
-export class UserDailyQuestion extends Model {
+export class CashTransaction extends Model {
   declare id: number;
-  declare userId: number;
-  declare questionId: number;
-  declare answer: string;
-  declare createdAt: string;
+  declare balanceId: number;
+  declare amount: number;
+  declare type: 'SPEND';
+  declare meta: string;
 }
 
-UserDailyQuestion.init(
+CashTransaction.init(
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    userId: {
+    amount: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    questionId: {
-      type: DataTypes.INTEGER,
+    type: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    answer: {
-      type: DataTypes.STRING(1000),
+    meta: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: 'user_daily_question',
+    tableName: 'cash_transaction',
     timestamps: true,
     underscored: true,
   },

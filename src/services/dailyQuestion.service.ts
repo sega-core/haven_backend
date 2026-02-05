@@ -7,7 +7,7 @@ export const getDaylyQuestionService = async (userId: number) => {
   const count = await DailyQuestion.count();
 
   if (count === 0) {
-    throw new ValidationError('Таблица с вопросами пуста');
+    throw new ValidationError('DailyQuestion count is empty');
   }
 
   const baseDate = startOfDay(new Date('2026-01-01'));
@@ -33,7 +33,7 @@ export const getDaylyQuestionService = async (userId: number) => {
   });
 
   if (!question) {
-    throw new ValidationError('Вопрос не найден');
+    throw new ValidationError('Question not found');
   }
 
   const userAnswer = question.UserDailyQuestion?.[0]?.answer || '';
@@ -54,7 +54,7 @@ export const createAnswerService = async (userId: number, answer: string) => {
   const { questionId, hasAnswered } = await getDaylyQuestionService(userId);
 
   if (hasAnswered) {
-    throw new ValidationError('Пользователь уже ответил на этот вопрос');
+    throw new ValidationError('User is answered this question');
   }
 
   return UserDailyQuestion.create({

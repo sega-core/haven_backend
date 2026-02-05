@@ -18,11 +18,11 @@ export const claimDailyBonusService = async (userId: number) => {
     const today = format(new Date(), 'yyyy-MM-dd');
 
     if (!coinBalance) {
-      throw new ValidationError('coinBalance не найден');
+      throw new ValidationError('CoinBalance not found');
     }
 
     if (coinBalance.lastBonusAt === today) {
-      throw new ValidationError('Сегодня коины уже получены');
+      throw new ValidationError('Today coin is received');
     }
 
     let streak = coinBalance.dailyStreak;
@@ -80,7 +80,7 @@ export const getCoinBalanceService = async (userId: number) => {
   });
 
   if (!coinBalance) {
-    throw new ValidationError('coinBalance не найден');
+    throw new ValidationError('CoinBalance not found');
   }
 
   return coinBalance;

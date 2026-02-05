@@ -34,7 +34,7 @@ export const updateTargetService = async (
   const target = await Target.findOne({
     where: { id, userId },
   });
-  if (!target) throw new ValidationError('Цель не найдена');
+  if (!target) throw new ValidationError('Target not found');
 
   return target.update(data);
 };
@@ -44,7 +44,7 @@ export const deleteTargetService = async (userId: number, id: number) => {
     where: { id, userId },
   });
 
-  if (!target) throw new ValidationError('Цель не найдена');
+  if (!target) throw new ValidationError('Target not found');
 
   return target.destroy();
 };
@@ -58,7 +58,7 @@ export const markDoneTargetService = async (
   //TODO: сделать недоступность отметки в неположенную дату, пока ограничения только на ui
 
   if (target?.completed) {
-    throw new ValidationError('Цель на сегодня уже завершена');
+    throw new ValidationError('Today target is completed');
   }
 
   return TargetCompletion.upsert({

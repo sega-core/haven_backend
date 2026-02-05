@@ -1,16 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
-import { CoinTransaction } from './coinTransaction';
 
-export class CoinBalance extends Model {
+export class Purchase extends Model {
   declare id: number;
   declare userId: number;
-  declare dailyStreak: number;
-  declare lastBonusAt: string;
-  declare total: number;
+  declare practiceId: number;
 }
 
-CoinBalance.init(
+Purchase.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -21,23 +18,18 @@ CoinBalance.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    dailyStreak: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    lastBonusAt: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
-    total: {
+    practiceId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: 'coin_balance',
+    tableName: 'purchase',
     timestamps: true,
     underscored: true,
   },
 );
+
+/* INSERT INTO purchase (user_id, practice_id) 
+VALUES (1,1); */

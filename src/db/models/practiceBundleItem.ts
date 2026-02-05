@@ -1,43 +1,45 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
-import { CoinTransaction } from './coinTransaction';
 
-export class CoinBalance extends Model {
+export class PracticeBundleItem extends Model {
   declare id: number;
-  declare userId: number;
-  declare dailyStreak: number;
-  declare lastBonusAt: string;
-  declare total: number;
+  declare bundleId: number;
+  declare practiceId: number;
+  declare position?: number;
 }
 
-CoinBalance.init(
+PracticeBundleItem.init(
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    userId: {
+    bundleId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    dailyStreak: {
+    practiceId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    lastBonusAt: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
-    total: {
+    position: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
     sequelize,
-    tableName: 'coin_balance',
+    tableName: 'practice_bundle_item',
     timestamps: true,
     underscored: true,
   },
 );
+
+
+/* -- Заполнение таблицы practice тестовыми данными
+INSERT INTO practice_bundle_item (bundle_id, practice_id ) VALUES
+(
+ 1,
+ 1
+); */

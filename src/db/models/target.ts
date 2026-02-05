@@ -44,15 +44,3 @@ Target.init(
     underscored: true,
   },
 );
-
-Target.hasMany(TargetCompletion, {
-  foreignKey: 'targetId',
-  sourceKey: 'id',
-  as: 'TargetCompletion',
-});
-
-TargetCompletion.belongsTo(Target, {
-  foreignKey: 'targetId',
-  targetKey: 'id',
-  as: 'Target',
-});

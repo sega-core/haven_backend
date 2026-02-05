@@ -6,6 +6,8 @@ import dailyQuestionRoute from './routes/dailyQuestion.routes';
 import targetRoute from './routes/target.routes';
 import progressRoute from './routes/progress.routes';
 import coinRoute from './routes/coin.routes';
+import practiceRoute from './routes/practice.routes';
+import practiceBundleRoute from './routes/practiceBundle.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
 
@@ -27,7 +29,9 @@ const routes = [
   dailyQuestionRoute,
   targetRoute,
   progressRoute,
-  coinRoute
+  coinRoute,
+  practiceRoute,
+  practiceBundleRoute
 ];
 
 
