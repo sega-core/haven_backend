@@ -45,6 +45,7 @@ export const getPracticeBundlesService = async (userId: number) => {
           {
             model: Practice,
             as: 'practice',
+            attributes: ['id', 'title', 'subTitle', 'priceZen', 'tags', 'description'],
           },
         ],
       },

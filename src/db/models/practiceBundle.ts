@@ -29,6 +29,11 @@ PracticeBundle.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    tags: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+      defaultValue: [],
+    },
     isActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,

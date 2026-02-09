@@ -99,6 +99,7 @@ CREATE TABLE practice (
   title VARCHAR(100) NOT NULL,
   sub_title VARCHAR(500) NOT NULL,
   description TEXT NOT NULL,
+  instructions TEXT NOT NULL,
   tags TEXT[] DEFAULT '{}',
   price_zen INT NOT NULL,
   is_active BOOLEAN DEFAULT true,

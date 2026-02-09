@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import {
   createPracticeService,
+  getPracticesInstructionsService,
   getPracticesService,
 } from '../services/practice.service';
 import { ValidationError } from '../utils/error.utils';
@@ -44,6 +45,22 @@ export const getPractices = asyncHandler(
   async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await getPracticesService(TEMP_USER_ID);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+export const getPracticeInstructions = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const practiceId = req.params.id;
+
+    try {
+      const result = await getPracticesInstructionsService(
+        TEMP_USER_ID,
+        Number(practiceId),
+      );
       res.json(result);
     } catch (error) {
       next(error);

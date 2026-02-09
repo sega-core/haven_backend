@@ -6,6 +6,7 @@ export class Practice extends Model {
   declare title: string;
   declare subTitle: string;
   declare description: string;
+  declare instructions: string;
   declare tags: string[];
   declare priceZen: number;
   declare isActive: boolean;
@@ -28,6 +29,10 @@ Practice.init(
       allowNull: false,
     },
     description: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    instructions: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
