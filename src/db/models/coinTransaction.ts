@@ -5,7 +5,7 @@ export class CoinTransaction extends Model {
   declare id: number;
   declare balanceId: number;
   declare amount: number;
-  declare type: 'DAILY_BONUS' | 'SPEND';
+  declare type: 'ACCRUE' | 'SPEND';
   declare meta: string;
 }
 
@@ -40,3 +40,7 @@ CoinTransaction.init(
     underscored: true,
   },
 );
+
+
+/* INSERT INTO coin_transaction (balance_id, amount, type) 
+VALUES (1, 1000, 'ACCRUE'),; */

@@ -69,7 +69,6 @@ CREATE TABLE coin_balance (
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   daily_streak INT NOT NULL DEFAULT 0,
   last_bonus_at DATE NOT NULL, --YYYY-MM-DD
-  total INT NOT NULL DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE (user_id)
@@ -79,7 +78,7 @@ CREATE TABLE coin_transaction (
   id SERIAL PRIMARY KEY,
   balance_id BIGINT NOT NULL REFERENCES coin_balance(id) ON DELETE CASCADE,
   amount INT NOT NULL,
-  type VARCHAR(32) NOT NULL, -- DAILY_BONUS | SPEND
+  type VARCHAR(32) NOT NULL, -- 'ACCRUE' | 'SPEND'
   meta JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -112,7 +111,8 @@ CREATE TABLE purchase (
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   practice_id INTEGER NOT NULL REFERENCES practice(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE (user_id, practice_id)
 );
 
 CREATE TABLE practice_bundle (
@@ -143,7 +143,7 @@ CREATE TABLE purchase_bundle (
   bundle_id INTEGER NOT NULL REFERENCES practice_bundle(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),  
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE (bundle_id)
+  UNIQUE (user_id, practice_id)
 );
 
 

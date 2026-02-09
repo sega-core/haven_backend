@@ -24,8 +24,13 @@ export function setupAssociations() {
   });
 
   //coin
-  CoinBalance.hasMany(CoinTransaction, { foreignKey: 'id' });
-  CoinTransaction.belongsTo(CoinBalance, { foreignKey: 'balanceId' });
+  CoinBalance.hasMany(CoinTransaction, {
+    foreignKey: 'balanceId',
+    as: 'coinTransactions',
+  });
+  CoinTransaction.belongsTo(CoinBalance, {
+    foreignKey: 'balanceId',
+  });
 
   //target
   Target.hasMany(TargetCompletion, {

@@ -36,4 +36,6 @@ User.init(
   },
 );
 
-export default User;
+
+/* INSERT INTO users (platform, username, platform_id) 
+VALUES ('telegram', 'sega', 88991238782); */

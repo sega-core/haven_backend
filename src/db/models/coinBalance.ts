@@ -7,7 +7,8 @@ export class CoinBalance extends Model {
   declare userId: number;
   declare dailyStreak: number;
   declare lastBonusAt: string;
-  declare total: number;
+  declare coinTransactions?: CoinTransaction;
+  declare balance: number;
 }
 
 CoinBalance.init(
@@ -29,10 +30,6 @@ CoinBalance.init(
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    total: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
   },
   {
     sequelize,
@@ -41,3 +38,6 @@ CoinBalance.init(
     underscored: true,
   },
 );
+
+/* INSERT INTO coin_balance (user_id, daily_streak, last_bonus_at) 
+VALUES (2, 0, '2025-01-28');  */
