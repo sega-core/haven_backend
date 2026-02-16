@@ -37,17 +37,6 @@ services:
     networks:
       - haven_network
 
-  certbot:
-    image: certbot/certbot:latest
-    container_name: haven_certbot
-    restart: unless-stopped
-    volumes:
-      - ./certbot/www:/var/www/certbot:rw
-      - ./certbot/conf:/etc/letsencrypt:rw
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    networks:
-      - haven_network
-
 volumes:
   postgres_data:
 
