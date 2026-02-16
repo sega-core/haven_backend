@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: haven_postgres
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - haven_network
+
+  backend:
+    build: ./haven_backend
+    container_name: haven_backend
+    restart: always
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+    networks:
+      - haven_network
+
+  frontend:
+    build: ./haven_client_frontend
+    container_name: haven_client_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - haven_network
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: haven_certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/www:/var/www/certbot:rw
+      - ./certbot/conf:/etc/letsencrypt:rw
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - haven_network
+
+volumes:
+  postgres_data:
+
+networks:
+  haven_network:

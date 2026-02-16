@@ -143,7 +143,7 @@ CREATE TABLE purchase_bundle (
   bundle_id INTEGER NOT NULL REFERENCES practice_bundle(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),  
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE (user_id, practice_id)
+  UNIQUE (user_id)
 );
 
 

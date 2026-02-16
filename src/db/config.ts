@@ -9,3 +9,6 @@ export const dbConfig = {
   port: Number(process.env.DB_PORT || 5432),
   dialect: 'postgres',
 };
+
+
+console.log({dbConfig})
