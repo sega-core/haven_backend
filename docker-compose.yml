@@ -34,11 +34,24 @@ services:
       - backend
     ports:
       - "80:80"
+      - "443:443"
     networks:
       - haven_network
+    volumes:
+      - letsencrypt_data:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+
+  certbot:
+    image: certbot/certbot
+    container_name: haven_certbot
+    volumes:
+      - letsencrypt_data:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
 
 volumes:
   postgres_data:
+  letsencrypt_data:
+  certbot_www:
 
 networks:
   haven_network:
