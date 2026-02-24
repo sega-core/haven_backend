@@ -10,6 +10,7 @@ export class Target extends Model {
   declare endDate: string;
   declare weekdays: string[];
   declare notifyTime?: string;
+  declare color?:string;
   declare TargetCompletion?: TargetCompletion[];
 }
 
@@ -35,6 +36,9 @@ Target.init(
     },
     notifyTime: {
       type: DataTypes.TIME,
+    },
+    color: {
+      type: DataTypes.STRING,
     },
   },
   {

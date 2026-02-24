@@ -50,6 +50,7 @@ CREATE TABLE target (
   end_date DATE NOT NULL, --YYYY-MM-DD
   weekdays TEXT[] DEFAULT '{}',
   notify_time TIME,
+  color VARCHAR(100),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

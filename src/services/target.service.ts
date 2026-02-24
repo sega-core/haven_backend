@@ -11,6 +11,7 @@ export const createTargetService = async (
     endDate: string;
     weekDays: string[];
     notifyTime?: string;
+    color?:string
   },
 ) => {
   const record = await Target.create({
@@ -133,6 +134,7 @@ export const calcTargetProgressService = async (target: Target) => {
     endDate: target.endDate,
     weekdays: target.weekdays,
     notifyTime: target.notifyTime || '',
+    color:target.color,
     completedDays,
     completionRate,
     relevantDays,
