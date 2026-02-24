@@ -20,6 +20,8 @@
   
    <!--  docker exec haven_client_frontend cat /etc/nginx/conf.d/default.conf -->
 
+   <!--docker compose restart frontend -->
+
 5) если бэк ругается на original: error: password authentication failed for user "postgres"
 
   <!-- docker exec -it haven_postgres psql -U postgres

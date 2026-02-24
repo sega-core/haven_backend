@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { User, CoinBalance } from '../db/models';
 import { ValidationError } from '../utils/error.utils';
 
@@ -29,7 +29,7 @@ export const createUserService = async (props: TCreateProps) => {
       userId,
       balance: 0,
       dailyStreak: 0,
-      lastBonusAt: format(new Date(), 'yyyy-MM-dd'),
+      lastBonusAt: format(subDays(new Date(), 1), 'yyyy-MM-dd'),
     });
 
     return user;
