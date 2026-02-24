@@ -6,7 +6,6 @@ import {
 } from '../services/practice.service';
 import { ValidationError } from '../utils/error.utils';
 import { asyncHandler } from '../decorators/asyncHandler';
-import { TEMP_USER_ID } from '../app';
 
 export const createPractice = asyncHandler(
   async (
@@ -42,9 +41,10 @@ export const createPractice = asyncHandler(
 );
 
 export const getPractices = asyncHandler(
-  async (_req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await getPracticesService(TEMP_USER_ID);
+      const userId = req.user.id;
+      const result = await getPracticesService(userId);
       res.json(result);
     } catch (error) {
       next(error);
@@ -55,10 +55,11 @@ export const getPractices = asyncHandler(
 export const getPracticeInstructions = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const practiceId = req.params.id;
+    const userId = req.user.id;
 
     try {
       const result = await getPracticesInstructionsService(
-        TEMP_USER_ID,
+        userId,
         Number(practiceId),
       );
       res.json(result);

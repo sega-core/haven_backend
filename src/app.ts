@@ -1,5 +1,5 @@
 import express from 'express';
-import cors from 'cors'
+import cors from 'cors';
 import gratitudeRoute from './routes/gratitude.routes';
 import moodRoute from './routes/mood.routes';
 import dailyQuestionRoute from './routes/dailyQuestion.routes';
@@ -8,14 +8,14 @@ import progressRoute from './routes/progress.routes';
 import coinRoute from './routes/coin.routes';
 import practiceRoute from './routes/practice.routes';
 import practiceBundleRoute from './routes/practiceBundle.routes';
+import authRoute from './routes/auth.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
-
-export const TEMP_USER_ID = 1;
+import { jwtAuthMiddleware } from './middlewares/jwt.middleware';
 
 const corsOptions = {
-  origin: true, //included origin as true
-  credentials: true, //included credentials as true
+  origin: true,
+  credentials: true,
 };
 
 const app = express();
@@ -31,14 +31,14 @@ const routes = [
   progressRoute,
   coinRoute,
   practiceRoute,
-  practiceBundleRoute
+  practiceBundleRoute,
 ];
 
+app.use('/api', authRoute);
 
 routes.forEach((router) => {
-  app.use("/api", router);
+  app.use('/api', jwtAuthMiddleware, router);
 });
-
 
 app.use('*', (_req, _res, next) => {
   next(new NotFoundError('Маршрут'));

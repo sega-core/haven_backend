@@ -3,8 +3,8 @@ import { sequelize } from '../index';
 
 export class User extends Model {
   declare id: number;
-  declare userId: number;
-  declare service: string;
+  declare platformId: number;
+  declare platform: string;
   declare username: number;
 }
 

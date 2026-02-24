@@ -6,12 +6,12 @@ import {
   deleteTargetService,
 } from '../services/target.service';
 import { asyncHandler } from '../decorators/asyncHandler';
-import { TEMP_USER_ID } from '../app';
 
 export const createTarget = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await createTargetService(TEMP_USER_ID, req.body);
+      const userId = req.user.id;
+      const result = await createTargetService(userId, req.body);
       res.json(result);
     } catch (error) {
       next(error);
@@ -44,9 +44,10 @@ export const markDoneTarget = asyncHandler(
 );
 
 export const getTarget = asyncHandler(
-  async (_req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const target = await getTargetService(TEMP_USER_ID);
+      const userId = req.user.id;
+      const target = await getTargetService(userId);
       res.json(target);
     } catch (error) {
       next(error);
@@ -58,7 +59,8 @@ export const deleteTarget = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const targetId = req.params.id;
-      const target = await deleteTargetService(TEMP_USER_ID, Number(targetId));
+      const userId = req.user.id;
+      const target = await deleteTargetService(userId, Number(targetId));
       res.json(target);
     } catch (error) {
       next(error);

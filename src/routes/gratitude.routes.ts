@@ -1,4 +1,3 @@
-/* import { authMiddleware } from './../middlewares/authMiddleware'; */
 import { Router } from 'express';
 import { createGratitude } from '../controllers/gratitude.controller';
 

@@ -3,7 +3,6 @@ import { createMoodService } from '../services/mood.service';
 import { ValidationError } from '../utils/error.utils';
 import { asyncHandler } from '../decorators/asyncHandler';
 import { MOOD_TAGS_MAP } from '../constants/mood.constant';
-import { TEMP_USER_ID } from '../app';
 
 //TODO: перевести ошибки на англ
 
@@ -15,6 +14,7 @@ export const createMood = asyncHandler(
   ) => {
     try {
       const { level, comment, tags } = req.body;
+      const userId = req.user.id;
 
       if (!level || !comment || !tags) {
         throw new ValidationError('Поля: level, tags, comment обязательны');
@@ -43,7 +43,7 @@ export const createMood = asyncHandler(
         );
       }
 
-      const result = await createMoodService(TEMP_USER_ID, level, tags, comment);
+      const result = await createMoodService(userId, level, tags, comment);
       res.json(result);
     } catch (error) {
       next(error);

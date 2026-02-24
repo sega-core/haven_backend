@@ -1,4 +1,3 @@
-/* import { authMiddleware } from './../middlewares/authMiddleware'; */
 import { Router } from 'express';
 import { claimDailyCoin, getCoinBalance, spendCoinBalance } from '../controllers/coin.controller';
 

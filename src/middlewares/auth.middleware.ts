@@ -1,70 +1,47 @@
-// src/middleware/authMiddleware.ts
-import { Request, Response, NextFunction } from "express";
-import crypto from "crypto";
+import { Request, Response, NextFunction } from 'express';
+import { validateTelegramInitData } from '../services/telegram.auth.service';
+import { createUserService, getUserService } from '../services/users.service';
+import { UnauthorizedError } from '../utils/error.utils';
 
-export type AuthenticatedUser = {
-  service: "telegram" | string;
-  id: string | number;
-  username?: string;
-  first_name?: string;
-  last_name?: string;
-  [key: string]: any;
-};
+export const authMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const initData = req.headers['x-telegram-init-data'] as string;
 
-// Telegram Mini App проверка подписи
-const telegramAuth = (botToken: string) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    console.log('telegramAuthtelegramAuthtelegramAuthtelegramAuthtelegramAuth')
-    const { query } = req;
-
-    if (!query || !query.hash) {
-      return res.status(401).json({ message: "Unauthorized: Telegram hash missing" });
+    if (!initData) {
+      throw new UnauthorizedError('initData not found');
     }
 
-    const hash = query.hash as string;
+    const validation = validateTelegramInitData(initData);
 
-    // Сортируем параметры и формируем строку для проверки
-    const dataCheckString = Object.entries(query)
-      .filter(([key]) => key !== "hash")
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([k, v]) => `${k}=${v}`)
-      .join("\n");
-
-    const secretKey = crypto.createHmac("sha256", botToken).update("WebAppData").digest();
-    const calculatedHash = crypto.createHmac("sha256", secretKey).update(dataCheckString).digest("hex");
-
-    if (calculatedHash !== hash) {
-      return res.status(401).json({ message: "Unauthorized: Invalid Telegram signature" });
+    if (!validation.isValid || !validation.user) {
+      throw new UnauthorizedError();
     }
 
-    /* req.user = {
-      service: "telegram",
-      userId:1,
-      id:1,
-      ...query,
-    } as AuthenticatedUser; */
+    const user = await getUserService({
+      platform: 'telegram',
+      platformId: validation.user.id,
+      username: validation.user.username || '',
+    });
 
-   req.user = { userId: 1 };
+    if (!user) {
+      const newUser = await createUserService({
+        platform: 'telegram',
+        platformId: validation.user.id,
+        username: validation.user.username || '',
+      });
 
+      req.user = newUser;
+      return next();
+    }
+
+    req.user = user;
 
     next();
-  };
-};
-
-export const authMiddleware = (options: { telegramBotToken: string; vkClientId?: string; vkClientSecret?: string }) => {
-  console.log('authMiddleware')
-  return (req: Request, res: Response, next: NextFunction) => {
-    // Telegram проверка
-    console.log('authMiddleware2')
-   /*  if (req.query && req.query.hash) {
-      return telegramAuth(options.telegramBotToken)(req, res, next);
-    } */
-/* 
-    if (req.headers["x-vk-token"] && options.vkClientId && options.vkClientSecret) {
-      return vkAuth(options.vkClientId, options.vkClientSecret)(req, res, next);
-    } */
-
-    // Если ни один сервис не сработал
-    return res.status(401).json({ message: "Unauthorized: No valid service detected" });
-  };
+  } catch (error) {
+    next(error);
+  }
 };

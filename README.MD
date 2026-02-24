@@ -16,6 +16,10 @@
   <!-- docker cp nginx_ssl.conf haven_client_frontend:/etc/nginx/conf.d/default.conf
   docker exec haven_client_frontend nginx -s reload -->
 
+  Проверка конфига nginx 
+  
+   <!--  docker exec haven_client_frontend cat /etc/nginx/conf.d/default.conf -->
+
 5) если бэк ругается на original: error: password authentication failed for user "postgres"
 
   <!-- docker exec -it haven_postgres psql -U postgres

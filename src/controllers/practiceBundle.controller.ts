@@ -5,7 +5,6 @@ import {
 } from '../services/practiceBundle.service';
 import { ValidationError } from '../utils/error.utils';
 import { asyncHandler } from '../decorators/asyncHandler';
-import { TEMP_USER_ID } from '../app';
 
 export const createPracticeBundle = asyncHandler(
   async (
@@ -47,9 +46,10 @@ export const createPracticeBundle = asyncHandler(
 );
 
 export const getPracticeBundles = asyncHandler(
-  async (_req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await getPracticeBundlesService(TEMP_USER_ID);
+      const userId = req.user.id;
+      const result = await getPracticeBundlesService(userId);
       res.json(result);
     } catch (error) {
       next(error);

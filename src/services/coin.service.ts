@@ -46,7 +46,6 @@ export const getCoinBalanceService = async (userId: number) => {
 };
 
 export const createDailyBonusService = async (userId: number) => {
-  /* await UserBalance.create({ userId, balance: 0 }); */ //TODO: вынести при создании пользователя
 
   return sequelize.transaction(async (tx) => {
     const coinBalance = await CoinBalance.findOne({
