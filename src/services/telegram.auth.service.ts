@@ -26,6 +26,7 @@ function extractInitData(raw: string): string {
 
 
 export function validateTelegramInitData(rawInitData: string) {
+  console.log({rawInitData})
   try {
     const initData = extractInitData(rawInitData);
     const params = new URLSearchParams(initData);
@@ -37,7 +38,6 @@ export function validateTelegramInitData(rawInitData: string) {
       return { isValid: false };
     }
 
-    // проверка срока жизни
     const now = Math.floor(Date.now() / 1000);
     if (now - Number(authDate) > 86400) {
       return { isValid: false };
