@@ -48,6 +48,17 @@ services:
       - letsencrypt_data:/etc/letsencrypt
       - certbot_www:/var/www/certbot
 
+  adminer:
+    image: adminer:latest
+    container_name: haven_adminer
+    restart: always
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - haven_network
+    depends_on:
+      - postgres
+
 volumes:
   postgres_data:
   letsencrypt_data:

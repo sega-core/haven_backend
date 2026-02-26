@@ -9,12 +9,10 @@ if (!BOT_TOKEN) {
 function extractInitData(raw: string): string {
   const params = new URLSearchParams(raw);
 
-  // если уже нормальный формат
   if (params.has('hash')) {
     return raw;
   }
 
-  // если это launch params
   const tgWebAppData = params.get('tgWebAppData');
 
   if (!tgWebAppData) {
@@ -24,22 +22,13 @@ function extractInitData(raw: string): string {
   return decodeURIComponent(tgWebAppData);
 }
 
-
 export function validateTelegramInitData(rawInitData: string) {
-  console.log({rawInitData})
   try {
     const initData = extractInitData(rawInitData);
     const params = new URLSearchParams(initData);
 
     const hash = params.get('hash');
-    const authDate = params.get('auth_date');
-
-    if (!hash || !authDate) {
-      return { isValid: false };
-    }
-
-    const now = Math.floor(Date.now() / 1000);
-    if (now - Number(authDate) > 86400) {
+    if (!hash) {
       return { isValid: false };
     }
 
@@ -51,7 +40,7 @@ export function validateTelegramInitData(rawInitData: string) {
 
     const secretKey = crypto
       .createHmac('sha256', 'WebAppData')
-      .update(process.env.TELEGRAM_BOT_TOKEN!)
+      .update(BOT_TOKEN)
       .digest();
 
     const computedHash = crypto
@@ -69,8 +58,7 @@ export function validateTelegramInitData(rawInitData: string) {
         ? JSON.parse(params.get('user')!)
         : null,
     };
-  } catch (e) {
+  } catch {
     return { isValid: false };
   }
 }
-
