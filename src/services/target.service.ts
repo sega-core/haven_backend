@@ -1,6 +1,13 @@
 import { Target, TargetCompletion } from '../db/models';
 import { ValidationError } from '../utils/error.utils';
-import { startOfDay, getDay, format, eachDayOfInterval } from 'date-fns';
+import {
+  startOfDay,
+  getDay,
+  format,
+  eachDayOfInterval,
+  isAfter,
+  isBefore,
+} from 'date-fns';
 
 const WEEKDAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
@@ -11,7 +18,7 @@ export const createTargetService = async (
     endDate: string;
     weekDays: string[];
     notifyTime?: string;
-    color?:string
+    color?: string;
   },
 ) => {
   const record = await Target.create({
@@ -92,10 +99,13 @@ export const getTargetService = async (userId: number) => {
   return targetsWithProgress;
 };
 
+export type TargetStatus = 'active' | 'completed' | 'overdue' | 'notStarted';
+
 export const calcTargetProgressService = async (target: Target) => {
   const startDate = new Date(target.startDate);
   const endDate = new Date(target.endDate);
   const today = format(new Date(), 'yyyy-MM-dd');
+  const currentDate = new Date();
 
   const completionDates =
     target.TargetCompletion?.map((item) => format(item.date, 'yyyy-MM-dd')) ||
@@ -113,8 +123,7 @@ export const calcTargetProgressService = async (target: Target) => {
   }).map((day) => format(day, 'yyyy-MM-dd'));
 
   const relevantDays = allDays.filter((day) => {
-    const dayOfWeek = getDay(day);
-
+    const dayOfWeek = getDay(new Date(day));
     return numericWeekdays.includes(dayOfWeek);
   });
 
@@ -127,6 +136,16 @@ export const calcTargetProgressService = async (target: Target) => {
 
   const isCanCompletedToday = !!relevantDays.find((item) => item === today);
 
+  let status: TargetStatus = 'active';
+
+  if (completedDays >= relevantDays.length && relevantDays.length > 0) {
+    status = 'completed';
+  } else if (isAfter(currentDate, endDate)) {
+    status = 'overdue';
+  } else if (isBefore(currentDate, startDate)) {
+    status = 'active'; //notStarted
+  }
+
   return {
     id: target.id,
     title: target.title,
@@ -134,11 +153,12 @@ export const calcTargetProgressService = async (target: Target) => {
     endDate: target.endDate,
     weekdays: target.weekdays,
     notifyTime: target.notifyTime || '',
-    color:target.color,
+    color: target.color,
     completedDays,
     completionRate,
     relevantDays,
     isCompletedToday,
     isCanCompletedToday,
+    status,
   };
 };
