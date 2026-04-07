@@ -12,7 +12,7 @@ export const getProgressService = async (userId: number) => {
     getDaylyQuestionService(userId),
   ]);
 
-  const isMoodDone = !!mood?.level && !!mood?.tags?.length && !!mood?.comment;
+  const isMoodDone = !!mood?.level;
   const isGratitudeDone = !!gratitude.length;
   const isDailyQuestionDone = dailyQuestion?.hasAnswered;
 
