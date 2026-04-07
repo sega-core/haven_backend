@@ -63,3 +63,55 @@ export const createAnswerService = async (userId: number, answer: string) => {
     answer,
   });
 };
+
+export const getDaylyQuestionRangeService = async (
+  userId: number,
+  startDate?: string,
+  endDate?: string,
+) => {
+  const whereClause: any = { userId };
+
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+
+    whereClause.createdAt = {
+      [Op.between]: [start, end],
+    };
+  } else if (startDate) {
+    const start = new Date(startDate);
+    whereClause.createdAt = {
+      [Op.gte]: start,
+    };
+  } else if (endDate) {
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+    whereClause.createdAt = {
+      [Op.lte]: end,
+    };
+  }
+
+  // Получаем ответы пользователя с вопросами
+  const userAnswers = await UserDailyQuestion.findAll({
+    where: whereClause,
+    include: [
+      {
+        model: DailyQuestion,
+        as: 'DailyQuestion',
+        attributes: ['id', 'question'],
+      },
+    ],
+    order: [['createdAt', 'ASC']],
+  });
+
+  const items = userAnswers.map((answer) => ({
+    id: answer.id,
+    questionId: answer.questionId,
+    question: answer.DailyQuestion?.question || 'Вопрос не найден',
+    userAnswer: answer.answer,
+    createdAt: answer.createdAt,
+  }));
+
+  return items;
+};

@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
+import { DailyQuestion } from './dailyQuestion';
 
 export class UserDailyQuestion extends Model {
   declare id: number;
@@ -7,6 +8,7 @@ export class UserDailyQuestion extends Model {
   declare questionId: number;
   declare answer: string;
   declare createdAt: string;
+  declare DailyQuestion:DailyQuestion
 }
 
 UserDailyQuestion.init(

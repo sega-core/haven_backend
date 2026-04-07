@@ -16,8 +16,8 @@ export const createMood = asyncHandler(
       const { level, comment, tags } = req.body;
       const userId = req.user.id;
 
-      if (!level || !comment || !tags) {
-        throw new ValidationError('Поля: level, tags, comment обязательны');
+      if (!level) {
+        throw new ValidationError('Поля: level обязательно');
       }
 
       if (tags.length > 3) {

@@ -5,8 +5,8 @@ export class Mood extends Model {
   declare id: number;
   declare userId: number;
   declare level: number;
-  declare tags: string[];
-  declare comment: string;
+  declare tags?: string[];
+  declare comment?: string;
 }
 
 Mood.init(
@@ -27,12 +27,12 @@ Mood.init(
     },
     tags: {
       type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: false,
+      allowNull: true,
       defaultValue: [],
     },
     comment: {
       type: DataTypes.STRING(500),
-      allowNull: false,
+      allowNull: true,
     },
   },
   {

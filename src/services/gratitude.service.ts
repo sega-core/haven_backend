@@ -27,3 +27,39 @@ export const getGratitudeService = async (userId: number) => {
 
   return items;
 };
+
+export const getGratitudeRangeService = async (
+  userId: number,
+  startDate?: string,
+  endDate?: string
+) => {
+  const whereClause: any = { userId };
+  
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+    
+    whereClause.createdAt = {
+      [Op.between]: [start, end]
+    };
+  } else if (startDate) {
+    const start = new Date(startDate);
+    whereClause.createdAt = {
+      [Op.gte]: start
+    };
+  } else if (endDate) {
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+    whereClause.createdAt = {
+      [Op.lte]: end
+    };
+  }
+  
+  const items = await Gratitude.findAll({
+    where: whereClause,
+    order: [['createdAt', 'ASC']],
+  });
+  
+  return items;
+};
