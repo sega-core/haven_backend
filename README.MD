@@ -13,8 +13,10 @@
 
 4) меняем дефолтный конфиг nginx 
 
-  <!-- docker cp nginx_ssl.conf haven_client_frontend:/etc/nginx/conf.d/default.conf
-  docker exec haven_client_frontend nginx -s reload -->
+  <!-- 
+  docker cp nginx_ssl.conf haven_client_frontend:/etc/nginx/conf.d/default.conf
+  docker exec haven_client_frontend nginx -s reload 
+  -->
 
   Проверка конфига nginx 
   

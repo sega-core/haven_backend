@@ -12,6 +12,11 @@ export const createAnswer = asyncHandler(
       if (!answer) {
         throw new ValidationError('Поле answer обязательно');
       }
+
+      if (answer.length > 1000) {
+        throw new ValidationError('Текст не должен быть больше 1000 символов');
+      }
+
       const result = await createAnswerService(userId, answer);
 
       res.json(result);

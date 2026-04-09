@@ -6,11 +6,18 @@ import {
   deleteTargetService,
 } from '../services/target.service';
 import { asyncHandler } from '../decorators/asyncHandler';
+import { ValidationError } from '../utils/error.utils';
 
 export const createTarget = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const { title } = req.body;
       const userId = req.user.id;
+
+      if (title.length > 100) {
+        throw new ValidationError('Текст не должен быть больше 100 символов');
+      }
+
       const result = await createTargetService(userId, req.body);
       res.json(result);
     } catch (error) {

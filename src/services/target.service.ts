@@ -14,6 +14,7 @@ const WEEKDAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 export const createTargetService = async (
   userId: number,
   data: {
+    title: string;
     startDate: string;
     endDate: string;
     weekDays: string[];
