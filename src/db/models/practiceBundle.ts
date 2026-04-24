@@ -8,6 +8,7 @@ export class PracticeBundle extends Model {
   declare priceRub: number;
   declare tags: string[];
   declare isActive: boolean;
+  declare imgUrl?: string;
 }
 
 PracticeBundle.init(
@@ -38,6 +39,10 @@ PracticeBundle.init(
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+    imgUrl: {
+      type: DataTypes.STRING(200),
+      allowNull: true,
+    },
   },
   {
     sequelize,
@@ -46,7 +51,6 @@ PracticeBundle.init(
     underscored: true,
   },
 );
-
 
 /* -- Заполнение таблицы practice тестовыми данными
 INSERT INTO practice_bundle (title, description, price_rub, tags) VALUES
