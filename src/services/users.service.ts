@@ -8,8 +8,11 @@ type TCreateProps = {
   platformId: number;
 };
 
-export const getUserService = async (props: TCreateProps) => {
-  const { platformId } = props;
+export const getUserService = async ({
+  platformId,
+}: {
+  platformId: number;
+}) => {
   const user = await User.findOne({
     where: {
       platformId,
@@ -21,6 +24,12 @@ export const getUserService = async (props: TCreateProps) => {
 
 export const createUserService = async (props: TCreateProps) => {
   try {
+    const findUser = await getUserService({ platformId: props.platformId });
+
+    if (findUser) {
+      return findUser;
+    }
+
     const user = await User.create(props);
 
     const { id: userId } = user;

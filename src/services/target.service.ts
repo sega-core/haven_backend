@@ -137,6 +137,8 @@ export const calcTargetProgressService = async (target: Target) => {
 
   const isCanCompletedToday = !!relevantDays.find((item) => item === today);
 
+  const isDone = completionRate === 100;
+
   let status: TargetStatus = 'active';
 
   if (completedDays >= relevantDays.length && relevantDays.length > 0) {
@@ -160,6 +162,7 @@ export const calcTargetProgressService = async (target: Target) => {
     relevantDays,
     isCompletedToday,
     isCanCompletedToday,
+    isDone,
     status,
   };
 };

@@ -103,6 +103,7 @@ CREATE TABLE practice (
   tags TEXT[] DEFAULT '{}',
   price_zen INT NOT NULL,
   is_active BOOLEAN DEFAULT true,
+  img_url VARCHAR(200),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -123,6 +124,7 @@ CREATE TABLE practice_bundle (
   price_rub INT NOT NULL,
   tags TEXT[] DEFAULT '{}',
   is_active BOOLEAN DEFAULT true,
+  img_url VARCHAR(200),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

@@ -3,6 +3,6 @@ import { checkAuth } from '../controllers/auth.controller';
 
 const router = Router();
 
-router.get('/auth/telegram', checkAuth);
+router.get('/me', checkAuth);
 
 export default router;

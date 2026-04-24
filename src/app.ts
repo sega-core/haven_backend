@@ -9,6 +9,7 @@ import coinRoute from './routes/coin.routes';
 import practiceRoute from './routes/practice.routes';
 import practiceBundleRoute from './routes/practiceBundle.routes';
 import authRoute from './routes/auth.routes';
+import registrationRoute from './routes/registration.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
 import { jwtAuthMiddleware } from './middlewares/jwt.middleware';
@@ -23,7 +24,7 @@ const app = express();
 app.use(cors(corsOptions));
 app.use(express.json());
 
-const routes = [
+const protectedRoutes = [
   gratitudeRoute,
   moodRoute,
   dailyQuestionRoute,
@@ -35,8 +36,9 @@ const routes = [
 ];
 
 app.use('/api', authRoute);
+app.use('/api', registrationRoute);
 
-routes.forEach((router) => {
+protectedRoutes.forEach((router) => {
   app.use('/api', jwtAuthMiddleware, router);
 });
 
