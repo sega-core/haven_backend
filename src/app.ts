@@ -10,6 +10,7 @@ import practiceRoute from './routes/practice.routes';
 import practiceBundleRoute from './routes/practiceBundle.routes';
 import authRoute from './routes/auth.routes';
 import registrationRoute from './routes/registration.routes';
+import userRoute from './routes/users.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
 import { jwtAuthMiddleware } from './middlewares/jwt.middleware';
@@ -33,6 +34,7 @@ const protectedRoutes = [
   coinRoute,
   practiceRoute,
   practiceBundleRoute,
+  userRoute,
 ];
 
 app.use('/api', authRoute);

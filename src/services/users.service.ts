@@ -1,6 +1,6 @@
 import { format, subDays } from 'date-fns';
 import { User, CoinBalance } from '../db/models';
-import { ValidationError } from '../utils/error.utils';
+import { NotFoundError, ValidationError } from '../utils/error.utils';
 
 type TCreateProps = {
   platform: string;
@@ -44,5 +44,28 @@ export const createUserService = async (props: TCreateProps) => {
     return user;
   } catch (error) {
     throw new ValidationError('createUserService error');
+  }
+};
+
+//TODO: проверить все ошибки, сделать как тут
+
+export const deleteUserService = async (userId: number) => {
+  try {
+    const findUser = await User.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!findUser) {
+      throw new NotFoundError('Пользователь');
+    }
+
+    return findUser.destroy();
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error;
+    }
+    throw new ValidationError(JSON.stringify(error));
   }
 };
