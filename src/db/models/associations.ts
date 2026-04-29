@@ -9,6 +9,8 @@ import { Target } from './target';
 import { TargetCompletion } from './targetCompletion';
 import { PracticeBundleItem } from './practiceBundleItem';
 import { PurchaseBundle } from './purchaseBundle';
+import { UserMetaCardAnswer } from './userMetaCardAnswer';
+import { MetaCard } from './metaCard';
 
 export function setupAssociations() {
   //dailyQuestion
@@ -82,5 +84,17 @@ export function setupAssociations() {
   });
   PurchaseBundle.belongsTo(PracticeBundle, {
     foreignKey: 'bundleId',
+  });
+
+  //metaCard
+  UserMetaCardAnswer.belongsTo(MetaCard, {
+    foreignKey: 'metaCardId',
+    targetKey: 'id',
+    as: 'MetaCard',
+  });
+  MetaCard.hasMany(UserMetaCardAnswer, {
+    foreignKey: 'metaCardId',
+    sourceKey: 'id',
+    as: 'UserMetaCardAnswer',
   });
 }

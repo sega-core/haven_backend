@@ -15,6 +15,8 @@ export { Purchase } from './purchase';
 export { PracticeBundle } from './practiceBundle';
 export { PracticeBundleItem } from './practiceBundleItem';
 export { PurchaseBundle } from './purchaseBundle';
+export { MetaCard } from './metaCard';
+export { UserMetaCardAnswer } from './userMetaCardAnswer';
 
 setupAssociations();
 

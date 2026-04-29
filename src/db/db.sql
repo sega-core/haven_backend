@@ -149,5 +149,25 @@ CREATE TABLE purchase_bundle (
   UNIQUE (user_id)
 );
 
+CREATE TABLE meta_card (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  description TEXT NOT NULL,
+  img_url VARCHAR(200),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+
+CREATE TABLE user_meta_card_answer (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  meta_card_id INTEGER NOT NULL REFERENCES meta_card(id) ON DELETE CASCADE,
+  seen VARCHAR(200) NOT NULL,
+  felt VARCHAR(200) NOT NULL,
+  understood VARCHAR(200) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
 --TODO: добавить индексы с таблицам--
