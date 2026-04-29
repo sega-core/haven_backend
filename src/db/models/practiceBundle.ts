@@ -9,6 +9,7 @@ export class PracticeBundle extends Model {
   declare tags: string[];
   declare isActive: boolean;
   declare imgUrl?: string;
+  declare sequence?: number;
 }
 
 PracticeBundle.init(
@@ -41,6 +42,10 @@ PracticeBundle.init(
     },
     imgUrl: {
       type: DataTypes.STRING(200),
+      allowNull: true,
+    },
+    sequence: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
   },

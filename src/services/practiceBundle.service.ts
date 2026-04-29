@@ -45,18 +45,19 @@ export const getPracticeBundlesService = async (userId: number) => {
           {
             model: Practice,
             as: 'practice',
-            attributes: ['id', 'title', 'subTitle', 'priceZen', 'tags', 'description'],
+            attributes: [
+              'id',
+              'title',
+              'subTitle',
+              'priceZen',
+              'tags',
+              'description',
+            ],
           },
         ],
       },
     ],
-    order: [
-      [
-        { model: PracticeBundleItem, as: 'practiceBundleItems' },
-        'position',
-        'ASC',
-      ],
-    ],
+    order: [['sequence', 'ASC']],
   });
 
   const purchasedBundleIds = new Set(

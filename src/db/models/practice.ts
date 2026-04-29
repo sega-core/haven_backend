@@ -11,6 +11,7 @@ export class Practice extends Model {
   declare priceZen: number;
   declare isActive: boolean;
   declare purchases?: Purchase[];
+  declare sequence?: number;
 }
 
 Practice.init(
@@ -47,6 +48,10 @@ Practice.init(
     },
     isActive: {
       type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    sequence: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
   },

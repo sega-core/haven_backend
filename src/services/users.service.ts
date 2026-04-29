@@ -1,5 +1,5 @@
 import { format, subDays } from 'date-fns';
-import { User, CoinBalance } from '../db/models';
+import { User, CoinBalance, CoinTransaction } from '../db/models';
 import { NotFoundError, ValidationError } from '../utils/error.utils';
 
 type TCreateProps = {
@@ -34,11 +34,18 @@ export const createUserService = async (props: TCreateProps) => {
 
     const { id: userId } = user;
 
-    await CoinBalance.create({
+    const coinBalance = await CoinBalance.create({
       userId,
       balance: 0,
       dailyStreak: 0,
       lastBonusAt: format(subDays(new Date(), 1), 'yyyy-MM-dd'),
+    });
+
+    await CoinTransaction.create({
+      balanceId: coinBalance.id,
+      amount: 5,
+      type: 'ACCRUE',
+      meta: JSON.stringify({ registration: 5 }),
     });
 
     return user;

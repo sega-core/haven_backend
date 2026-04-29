@@ -25,6 +25,7 @@ export const getPracticesService = async (userId: number) => {
         attributes: ['id'],
       },
     ],
+    order: [['sequence', 'ASC']],
   });
 
   const withPurchaseFlag = (item: Practice) => {

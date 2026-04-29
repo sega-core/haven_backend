@@ -104,6 +104,7 @@ CREATE TABLE practice (
   price_zen INT NOT NULL,
   is_active BOOLEAN DEFAULT true,
   img_url VARCHAR(200),
+  sequence INT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -125,6 +126,7 @@ CREATE TABLE practice_bundle (
   tags TEXT[] DEFAULT '{}',
   is_active BOOLEAN DEFAULT true,
   img_url VARCHAR(200),
+  sequence INT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -144,6 +146,7 @@ CREATE TABLE purchase_bundle (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   bundle_id INTEGER NOT NULL REFERENCES practice_bundle(id) ON DELETE CASCADE,
+  sequence INT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),  
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE (user_id)
