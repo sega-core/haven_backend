@@ -12,6 +12,7 @@ export class Practice extends Model {
   declare isActive: boolean;
   declare purchases?: Purchase[];
   declare sequence?: number;
+  declare imgUrl?: string;
 }
 
 Practice.init(
@@ -48,6 +49,10 @@ Practice.init(
     },
     isActive: {
       type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    imgUrl: {
+      type: DataTypes.STRING(200),
       allowNull: true,
     },
     sequence: {
