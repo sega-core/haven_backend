@@ -9,6 +9,7 @@ export class Practice extends Model {
   declare instructions: string;
   declare tags: string[];
   declare priceZen: number;
+  declare priceRub: number;
   declare isActive: boolean;
   declare purchases?: Purchase[];
   declare sequence?: number;
@@ -47,6 +48,10 @@ Practice.init(
       type: DataTypes.INTEGER(),
       allowNull: false,
     },
+    priceRub: {
+      type: DataTypes.INTEGER(),
+      allowNull: true,
+    },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
@@ -69,13 +74,14 @@ Practice.init(
 );
 
 /* -- Заполнение таблицы practice тестовыми данными
-INSERT INTO practice (title, sub_title, description, tags, price_zen) VALUES
+INSERT INTO practice (title, sub_title, description, tags, price_zen, price_zen) VALUES
 (
   'Утренняя медитация',
   'Начните день с осознанности',
   'Сядьте в удобную позу. Закройте глаза. Сосредоточьтесь на дыхании. На вдохе считайте 1-2-3-4, на выдохе 1-2-3-4. Продолжайте 10 минут.',
   ARRAY['медитация', 'утро', 'осознанность', 'бесплатно'],
-  100
+  100,
+  80
 ),
 (
   'Дыхание 4-7-8',

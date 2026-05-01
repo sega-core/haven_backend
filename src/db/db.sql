@@ -102,6 +102,7 @@ CREATE TABLE practice (
   instructions TEXT NOT NULL,
   tags TEXT[] DEFAULT '{}',
   price_zen INT NOT NULL,
+  price_rub INT,
   is_active BOOLEAN DEFAULT true,
   img_url VARCHAR(200),
   sequence INT,
