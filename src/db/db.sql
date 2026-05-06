@@ -174,4 +174,16 @@ CREATE TABLE user_meta_card_answer (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+CREATE TABLE  order (
+  id BIGINT NOT NULL PRIMARY KEY -- InvId от Robokassa,
+  practice_id INTEGER,
+  bundle_id INTEGER,
+  user_id INT NOT NULL,
+  amount INT NOT NULL,
+  purchase_type VARCHAR(20) NOT NULL CHECK (purchase_type IN ('practice', 'bundle'))
+  status ENUM('pending', 'paid', 'failed') NOT NULL DEFAULT 'pending',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+)
+
 --TODO: добавить индексы с таблицам--

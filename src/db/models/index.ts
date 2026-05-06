@@ -17,6 +17,7 @@ export { PracticeBundleItem } from './practiceBundleItem';
 export { PurchaseBundle } from './purchaseBundle';
 export { MetaCard } from './metaCard';
 export { UserMetaCardAnswer } from './userMetaCardAnswer';
+export { Order } from './order';
 
 setupAssociations();
 

@@ -12,6 +12,7 @@ import authRoute from './routes/auth.routes';
 import registrationRoute from './routes/registration.routes';
 import userRoute from './routes/users.routes';
 import metaCardRoute from './routes/metaCard.routes';
+import paymentRoute from './routes/payment.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
 import { jwtAuthMiddleware } from './middlewares/jwt.middleware';
@@ -37,6 +38,7 @@ const protectedRoutes = [
   practiceBundleRoute,
   userRoute,
   metaCardRoute,
+  paymentRoute,
 ];
 
 app.use('/api', authRoute);
