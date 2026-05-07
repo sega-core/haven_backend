@@ -16,7 +16,7 @@ const ROBOKASSA_CONFIG = {
   password1: process.env.ROBOKASSA_PS1,
   apiUrl: {
     createInvoice:
-      'https://merchant.roboxchange.com/InvoiceServiceWebApi/api/CreateInvoice',
+      'https://services.robokassa.ru/InvoiceServiceWebApi/api/CreateInvoice',
     deactivateInvoice:
       'https://services.robokassa.ru/InvoiceServiceWebApi/api/DeactivateInvoice',
   },
@@ -174,8 +174,6 @@ export const createInvoiceRubService = async (params: {
     ROBOKASSA_CONFIG.merchantLogin || '',
   );
 
-  console.log('Robokassa token:', JSON.stringify(token));
-
   try {
     const response = await fetch(ROBOKASSA_CONFIG.apiUrl.createInvoice, {
       method: 'POST',
@@ -210,7 +208,7 @@ export const createInvoiceRubService = async (params: {
     };
   } catch (error) {
     await OrderRub.destroy({ where: { id: invId } }).catch(() => {});
-    throw new ValidationError(`Robokassa API error`);
+    throw new ValidationError(`Robokassa API error, ${JSON.stringify(error)}`);
   }
 };
 
