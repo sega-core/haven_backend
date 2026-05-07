@@ -97,7 +97,6 @@ CREATE TABLE cash_transaction (
 CREATE TABLE practice (
   id SERIAL PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
-  sub_title VARCHAR(500) NOT NULL,
   description TEXT NOT NULL,
   instructions TEXT NOT NULL,
   tags TEXT[] DEFAULT '{}',
@@ -174,16 +173,25 @@ CREATE TABLE user_meta_card_answer (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE  order (
-  id BIGINT NOT NULL PRIMARY KEY -- InvId от Robokassa,
-  practice_id INTEGER,
-  bundle_id INTEGER,
-  user_id INT NOT NULL,
+CREATE TABLE order_rub (
+  id BIGINT NOT NULL PRIMARY KEY, -- InvId от Robokassa,
+  item_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   amount INT NOT NULL,
-  purchase_type VARCHAR(20) NOT NULL CHECK (purchase_type IN ('practice', 'bundle'))
-  status ENUM('pending', 'paid', 'failed') NOT NULL DEFAULT 'pending',
+  purchase_type VARCHAR(20) NOT NULL CHECK (purchase_type IN ('practice', 'bundle')),
+  status VARCHAR(50)  NOT NULL DEFAULT 'pending', -- ENUM('pending', 'paid', 'failed')
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-)
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE order_zen (
+  id SERIAL PRIMARY KEY,  
+  item_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  amount INT NOT NULL,
+  purchase_type VARCHAR(20) NOT NULL CHECK (purchase_type IN ('practice', 'bundle')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
 --TODO: добавить индексы с таблицам--

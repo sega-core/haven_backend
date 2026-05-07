@@ -2,14 +2,9 @@ import {
   PracticeBundle,
   PracticeBundleItem,
   Practice,
-  PurchaseBundle,
-  Purchase,
+  OrderRub,
 } from '../db/models';
-
-const BUNDLE_DISCOUNT_PERCENT = 20;
-
-const applyDiscount = (price: number) =>
-  Math.floor(price * (1 - BUNDLE_DISCOUNT_PERCENT / 100));
+import { getPurchasedPracticeIds } from './practice.service';
 
 export const createPracticeBundleService = async (body: {
   title: string;
@@ -45,13 +40,7 @@ export const getPracticeBundlesService = async (userId: number) => {
           {
             model: Practice,
             as: 'practice',
-            attributes: [
-              'id',
-              'title',
-              'priceZen',
-              'tags',
-              'description',
-            ],
+            attributes: { exclude: ['instructions'] },
           },
         ],
       },
@@ -59,37 +48,34 @@ export const getPracticeBundlesService = async (userId: number) => {
     order: [['sequence', 'ASC']],
   });
 
-  const purchasedBundleIds = new Set(
-    (
-      await PurchaseBundle.findAll({
-        where: { userId },
-        attributes: ['bundleId'],
-      })
-    ).map((b) => b.bundleId),
-  );
-
-  const purchasedPracticeIds = new Set(
-    (
-      await Purchase.findAll({
-        where: { userId },
-        attributes: ['practiceId'],
-      })
-    ).map((p) => p.practiceId),
-  );
+  const purchasedBundleIds = await getPurchasedBundleIds(userId);
+  const purchasedPracticeIds = await getPurchasedPracticeIds(userId);
 
   return bundles.map((bundle) => {
     const json = bundle.toJSON();
 
     const isBundlePurchased = purchasedBundleIds.has(bundle.id);
 
-    const somePurchesedByZen = json?.practiceBundleItems
-      .map((item: any) => purchasedPracticeIds.has(item.practice.id))
-      .some((item: boolean) => item);
+    const allPractices =
+      bundle?.practiceBundleItems?.map((item: any) => item.practice) || [];
+
+    const totalPracticesCount = allPractices.length;
+
+    const unpurchasedPractices = allPractices?.filter(
+      (practice: any) => !purchasedPracticeIds.has(practice.id),
+    );
+
+    const allPracticesPurchased = unpurchasedPractices?.length === 0
+
+    const pricePerPractice = bundle.priceRub / totalPracticesCount;
+
+    const priceRubWithDiscount = Math.round(
+      pricePerPractice * unpurchasedPractices.length,
+    );
 
     return {
-      priceRubWithDiscount: applyDiscount(json.priceRub),
-      isApplyDiscount: somePurchesedByZen,
-      isPurchasedBundle: isBundlePurchased,
+      isPurchased: isBundlePurchased || allPracticesPurchased,
+      priceRubWithDiscount,
       ...json,
       practiceBundleItems: json.practiceBundleItems.map((item: any) => ({
         ...item,
@@ -101,4 +87,23 @@ export const getPracticeBundlesService = async (userId: number) => {
       })),
     };
   });
+};
+
+export const getPurchasedBundleIds = async (
+  userId: number,
+): Promise<Set<number>> => {
+  const purchasedPracticeIds = new Set<number>();
+
+  const rubPurchases = await OrderRub.findAll({
+    where: {
+      userId,
+      purchaseType: 'bundle',
+      status: 'paid',
+    },
+    attributes: ['itemId'],
+    raw: true,
+  });
+  rubPurchases.forEach((p) => purchasedPracticeIds.add(p.itemId));
+
+  return purchasedPracticeIds;
 };

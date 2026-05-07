@@ -4,11 +4,9 @@ import { CoinBalance } from './coinBalance';
 import { CoinTransaction } from './coinTransaction';
 import { Practice } from './practice';
 import { PracticeBundle } from './practiceBundle';
-import { Purchase } from './purchase';
 import { Target } from './target';
 import { TargetCompletion } from './targetCompletion';
 import { PracticeBundleItem } from './practiceBundleItem';
-import { PurchaseBundle } from './purchaseBundle';
 import { UserMetaCardAnswer } from './userMetaCardAnswer';
 import { MetaCard } from './metaCard';
 
@@ -46,15 +44,6 @@ export function setupAssociations() {
     as: 'Target',
   });
 
-  //practice
-  Practice.hasMany(Purchase, {
-    foreignKey: 'practiceId',
-    as: 'purchases',
-  });
-  Purchase.belongsTo(Practice, {
-    foreignKey: 'practiceId',
-  });
-
   //practiceBundle
   Practice.belongsToMany(PracticeBundle, {
     through: 'practice_bundle_item',
@@ -75,15 +64,6 @@ export function setupAssociations() {
   PracticeBundleItem.belongsTo(Practice, {
     foreignKey: 'practiceId',
     as: 'practice',
-  });
-
-  //practiceBundle - purchaseBundle
-  PracticeBundle.hasMany(PurchaseBundle, {
-    foreignKey: 'bundleId',
-    as: 'purchaseBundles',
-  });
-  PurchaseBundle.belongsTo(PracticeBundle, {
-    foreignKey: 'bundleId',
   });
 
   //metaCard

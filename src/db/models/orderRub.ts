@@ -1,13 +1,16 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
 
-export class Purchase extends Model {
+export class OrderRub extends Model {
   declare id: number;
   declare userId: number;
-  declare practiceId: number;
+  declare itemId: number;
+  declare amount: number;
+  declare purchaseType: string;
+  declare status: string;
 }
 
-Purchase.init(
+OrderRub.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -18,18 +21,27 @@ Purchase.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    practiceId: {
+    itemId: {
       type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    amount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    purchaseType: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: 'purchase',
+    tableName: 'order_rub',
     timestamps: true,
     underscored: true,
   },
 );
-
-/* INSERT INTO purchase (user_id, practice_id) 
-VALUES (1,1); */

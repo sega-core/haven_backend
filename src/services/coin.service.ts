@@ -1,4 +1,4 @@
-import { CoinBalance, CoinTransaction, Purchase } from '../db/models';
+import { CoinBalance, CoinTransaction } from '../db/models';
 import { differenceInCalendarDays, format } from 'date-fns';
 import { ValidationError } from '../utils/error.utils';
 import { sequelize } from '../db';
@@ -46,7 +46,6 @@ export const getCoinBalanceService = async (userId: number) => {
 };
 
 export const createDailyBonusService = async (userId: number) => {
-
   return sequelize.transaction(async (tx) => {
     const coinBalance = await CoinBalance.findOne({
       where: { userId },
@@ -111,11 +110,12 @@ export const createDailyBonusService = async (userId: number) => {
   });
 };
 
-export const spendCoinBalanceService = async (
-  userId: number,
-  amount: number,
-  practiceId: number,
-) => {
+export const spendCoinBalanceService = async (params: {
+  userId: number;
+  amount: number;
+  practiceId: number;
+}) => {
+  const { userId, amount, practiceId } = params;
   const coinBalance = await getCoinBalanceService(userId);
 
   if (amount > coinBalance.balance) {
@@ -130,8 +130,6 @@ export const spendCoinBalanceService = async (
     type: 'SPEND',
     meta: JSON.stringify({ practiceId }),
   });
-
-  await Purchase.create({ userId, practiceId });
 
   return {};
 };

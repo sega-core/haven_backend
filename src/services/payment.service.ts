@@ -1,6 +1,15 @@
-import { Order, Practice } from '../db/models';
+import {
+  OrderRub,
+  OrderZen,
+  Practice,
+  PracticeBundle,
+  PracticeBundleItem,
+} from '../db/models';
 import { ValidationError, NotFoundError } from '../utils/error.utils';
 import { createRobokassaToken } from '../utils/robokassa.utils';
+import { spendCoinBalanceService } from './coin.service';
+import { getPurchasedPracticeIds } from './practice.service';
+import { getPurchasedBundleIds } from './practiceBundle.service';
 
 const ROBOKASSA_CONFIG = {
   merchantLogin: process.env.ROBOKASSA_MERCHANT_LOGIN,
@@ -13,44 +22,151 @@ const ROBOKASSA_CONFIG = {
   },
 };
 
+export const createInvoiceRubService = async (params: {
+  type: 'practice' | 'bundle';
+  id: number;
+  userId: number;
+}) => {
+  const { type, id, userId } = params;
 
-export const createInvoiceService = async (
-  practiceId: number,
-  userId: number,
-) => {
-  const practice = await Practice.findOne({
-    where: {
-      id: practiceId,
-    },
-  });
+  let invId = Date.now();
+  let payload: any;
 
-  if (!practice) {
-    throw new NotFoundError('practice');
-  }
+  const purchasedBundleIds = await getPurchasedBundleIds(userId);
+  const purchasedPracticeIds = await getPurchasedPracticeIds(userId);
 
-  const invId = Date.now();
+  if (type === 'practice') {
+    if (purchasedPracticeIds.has(id)) {
+      throw new ValidationError('practice already been purchased');
+    }
 
-  const payload = {
-    MerchantLogin: ROBOKASSA_CONFIG.merchantLogin,
-    InvoiceType: 'OneTime',
-    Culture: 'ru',
-    InvId: invId,
-    OutSum: practice.priceRub,
-    MerchantComments: `Покупка практики "${practice.title}"`,
-    UserFields: {
-      practice_id: practiceId.toString(),
-    },
-    InvoiceItems: [
-      {
-        Name: practice.title,
-        Quantity: 1,
-        Cost: practice.priceRub,
-        Tax: 'vat20',
-        PaymentMethod: 'full_payment',
-        PaymentObject: 'service',
+    const practice = await Practice.findOne({
+      where: { id },
+    });
+
+    if (!practice) {
+      throw new NotFoundError('practice');
+    }
+
+    if (!practice.priceRub) {
+      throw new ValidationError('practice has not price');
+    }
+
+    payload = {
+      MerchantLogin: ROBOKASSA_CONFIG.merchantLogin,
+      InvoiceType: 'OneTime',
+      Culture: 'ru',
+      InvId: invId,
+      OutSum: practice.priceRub,
+      MerchantComments: `Покупка практики "${practice.title}"`,
+      UserFields: {
+        purchase_type: 'practice',
+        purchase_id: id.toString(),
+        user_id: userId.toString(),
       },
-    ],
-  };
+      InvoiceItems: [
+        {
+          Name: practice.title,
+          Quantity: 1,
+          Cost: practice.priceRub,
+          Tax: 'vat20',
+          PaymentMethod: 'full_payment',
+          PaymentObject: 'service',
+        },
+      ],
+    };
+
+    await OrderRub.create({
+      id: invId,
+      userId,
+      itemId: id,
+      amount: practice.priceRub,
+      status: 'pending',
+      purchaseType: 'practice',
+    });
+  } else if (type === 'bundle') {
+    if (purchasedBundleIds.has(id)) {
+      throw new ValidationError('bundle already been purchased');
+    }
+    const bundle = await PracticeBundle.findOne({
+      where: { id },
+      include: [
+        {
+          model: PracticeBundleItem,
+          as: 'practiceBundleItems',
+          attributes: ['practiceId', 'position'],
+          include: [
+            {
+              model: Practice,
+              as: 'practice',
+              attributes: ['id', 'title', 'priceZen', 'tags', 'description'],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!bundle) {
+      throw new NotFoundError('bundle');
+    }
+
+    const allPractices =
+      bundle?.practiceBundleItems?.map((item: any) => item.practice) || [];
+
+    const totalPracticesCount = allPractices.length;
+
+    const unpurchasedPractices = allPractices?.filter(
+      (practice: any) => !purchasedPracticeIds.has(practice.id),
+    );
+
+    if (unpurchasedPractices?.length === 0) {
+      throw new ValidationError(
+        'All practices in this bundle have already been purchased',
+      );
+    }
+
+    const pricePerPractice = bundle.priceRub / totalPracticesCount;
+
+    const totalSum = Math.round(pricePerPractice * unpurchasedPractices.length);
+
+    payload = {
+      MerchantLogin: ROBOKASSA_CONFIG.merchantLogin,
+      InvoiceType: 'OneTime',
+      Culture: 'ru',
+      InvId: invId,
+      OutSum: totalSum,
+      MerchantComments: `Покупка коллекции практик "${bundle.title}"`,
+      UserFields: {
+        purchase_type: 'bundle',
+        purchase_id: id.toString(),
+        user_id: userId.toString(),
+        bundle_title: bundle.title,
+      },
+      InvoiceItems: [
+        {
+          Name: `Коллекция практик "${bundle.title}"`,
+          Quantity: 1,
+          Cost: totalSum,
+          Tax: 'vat20',
+          PaymentMethod: 'full_payment',
+          PaymentObject: 'service',
+        },
+      ],
+    };
+
+    await OrderRub.create({
+      id: invId,
+      userId,
+      itemId: id,
+      amount: bundle.priceRub,
+      status: 'pending',
+      purchaseType: 'bundle',
+    });
+  } else {
+    throw new ValidationError(
+      'Invalid purchase type. Use "practice" or "bundle"',
+    );
+  }
 
   const token = createRobokassaToken(
     payload,
@@ -58,7 +174,7 @@ export const createInvoiceService = async (
     ROBOKASSA_CONFIG.merchantLogin || '',
   );
 
-  console.log(JSON.stringify(token));
+  console.log('Robokassa token:', JSON.stringify(token));
 
   try {
     const response = await fetch(ROBOKASSA_CONFIG.apiUrl.createInvoice, {
@@ -74,26 +190,64 @@ export const createInvoiceService = async (
       invId?: number;
       url?: string;
       isSuccess: boolean;
+      description?: string;
     };
 
     const isSuccess = data?.isSuccess;
 
-    await Order.create({
-      id: invId,
-      userId,
-      practiceId,
-      amount: practice.priceRub,
-      status: 'pending',
-    });
-
     if (!isSuccess) {
-      throw new ValidationError(`isSuccess:false`);
+      await OrderRub.destroy({ where: { id: invId } });
+      throw new ValidationError(
+        `Robokassa error: ${data.description || 'isSuccess:false'}`,
+      );
     }
 
-    return { ...data };
+    return {
+      url: data.url,
+      invId: data.invId,
+      purchaseType: type,
+      purchaseId: id,
+    };
   } catch (error) {
+    await OrderRub.destroy({ where: { id: invId } }).catch(() => {});
     throw new ValidationError(`Robokassa API error`);
   }
+};
+
+export const createInvoiceZenService = async (params: {
+  id: number;
+  userId: number;
+}) => {
+  const type = 'practice';
+
+  const { id, userId } = params;
+
+  const practice = await Practice.findOne({
+    where: { id },
+  });
+
+  if (!practice) {
+    throw new NotFoundError('practice');
+  }
+
+  if (!practice.priceZen) {
+    throw new ValidationError('practice has not priceZen');
+  }
+
+  await OrderZen.create({
+    userId,
+    itemId: id,
+    amount: practice.priceZen,
+    purchaseType: type,
+  });
+
+  await spendCoinBalanceService({
+    userId,
+    amount: practice.priceZen,
+    practiceId: id,
+  });
+
+  return {};
 };
 
 export const deactivateInvoiceService = async (invId: number) => {
@@ -128,6 +282,6 @@ export const deactivateInvoiceService = async (invId: number) => {
       isSuccess,
     };
   } catch (error) {
-    throw new ValidationError(`Robokassa API error`);
+    throw new ValidationError(`Robokassa API error ${JSON.stringify(error)}`);
   }
 };

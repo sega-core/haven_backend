@@ -1,6 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
-import { Purchase } from './purchase';
 export class Practice extends Model {
   declare id: number;
   declare title: string;
@@ -10,7 +9,6 @@ export class Practice extends Model {
   declare priceZen: number;
   declare priceRub: number;
   declare isActive: boolean;
-  declare purchases?: Purchase[];
   declare sequence?: number;
   declare imgUrl?: string;
 }

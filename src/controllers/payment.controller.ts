@@ -1,16 +1,37 @@
 import { NextFunction, Request, Response } from 'express';
 import { asyncHandler } from '../decorators/asyncHandler';
-import { createInvoiceService, deactivateInvoiceService } from '../services/payment.service';
+import {
+  createInvoiceRubService,
+  deactivateInvoiceService,
+  createInvoiceZenService,
+} from '../services/payment.service';
+import { ValidationError } from '../utils/error.utils';
 
 export const createPayment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const practiceId = req.params.practiceId;
+      const { type, id, currency } = req.body;
       const userId = req.user.id;
 
+      if (currency === 'zen') {
+        const result = await createInvoiceZenService({
+          id: Number(id),
+          userId,
+        });
+        return res.json(result);
+      }
 
-      const result = await createInvoiceService(Number(practiceId), userId);
-      res.json(result);
+      if (currency === 'rub') {
+        const result = await createInvoiceRubService({
+          type: type as 'practice' | 'bundle',
+          id: Number(id),
+          userId,
+        });
+
+        return res.json(result);
+      }
+
+      throw new ValidationError('currency');
     } catch (error) {
       next(error);
     }

@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
+import { PracticeBundleItem } from './practiceBundleItem';
 
 export class PracticeBundle extends Model {
   declare id: number;
@@ -10,6 +11,7 @@ export class PracticeBundle extends Model {
   declare isActive: boolean;
   declare imgUrl?: string;
   declare sequence?: number;
+  declare practiceBundleItems?: PracticeBundleItem[];
 }
 
 PracticeBundle.init(

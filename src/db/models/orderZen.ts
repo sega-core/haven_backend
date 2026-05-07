@@ -1,16 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
 
-export class Order extends Model {
+export class OrderZen extends Model {
   declare id: number;
   declare userId: number;
-  declare practiceId?: number;
-  declare bundleId?: number;
-  declare amound: number;
-  declare status: string;
+  declare itemId: number;
+  declare amount: number;
+  declare purchaseType: string;
 }
 
-Order.init(
+OrderZen.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -21,26 +20,22 @@ Order.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    practiceId: {
+    itemId: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    bundleId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    amound: {
+    amount: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    status: {
+    purchaseType: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: 'order',
+    tableName: 'order_zen',
     timestamps: true,
     underscored: true,
   },

@@ -1,4 +1,4 @@
-import { Practice, Purchase } from '../db/models';
+import { OrderRub, OrderZen, Practice, PracticeBundleItem } from '../db/models';
 import { ValidationError } from '../utils/error.utils';
 
 export const createPracticeService = async (body: {
@@ -13,59 +13,75 @@ export const createPracticeService = async (body: {
 };
 
 export const getPracticesService = async (userId: number) => {
-  const items = await Practice.findAll({
+  const practices = await Practice.findAll({
     attributes: { exclude: ['instructions'] },
-    include: [
-      {
-        model: Purchase,
-        as: 'purchases',
-        required: false,
-        where: { userId },
-        attributes: ['id'],
-      },
-    ],
     order: [['sequence', 'ASC']],
+    raw: true,
   });
 
-  const withPurchaseFlag = (item: Practice) => {
-    const { purchases, ...other } = item.toJSON();
+  const purchasedPracticeIds = await getPurchasedPracticeIds(userId);
 
-    return {
-      ...other,
-      isPurchased: Boolean(purchases?.length),
-    };
-  };
-
-  return items.map(withPurchaseFlag);
+  return practices.map((practice) => ({
+    ...practice,
+    isPurchased: purchasedPracticeIds.has(practice.id),
+  }));
 };
 
 export const getPracticesInstructionsService = async (
   userId: number,
   practiceId: number,
 ) => {
-  const item = await Practice.findOne({
+  const isPurchased = await isPracticePurchased(userId, practiceId);
+
+  if (!isPurchased) {
+    throw new ValidationError('The practice is not bought');
+  }
+
+  const practice = await Practice.findOne({
     where: { id: practiceId },
     attributes: ['instructions'],
-    include: [
-      {
-        model: Purchase,
-        as: 'purchases',
-        required: false,
-        where: { userId, practiceId },
-        attributes: ['id'],
-      },
-    ],
   });
 
-  const checkPurchase = (item: Practice | null) => {
-    if (!item) throw new ValidationError('Practice not found');
-    const { purchases, ...other } = item.toJSON();
+  if (!practice) {
+    throw new ValidationError('Practice not found');
+  }
 
-    if (Boolean(purchases?.length)) {
-      return { ...other };
-    }
-    throw new ValidationError('The practice is not bought');
-  };
+  return practice;
+};
 
-  return checkPurchase(item);
+export const getPurchasedPracticeIds = async (
+  userId: number,
+): Promise<Set<number>> => {
+  const purchasedPracticeIds = new Set<number>();
+
+  const rubPurchases = await OrderRub.findAll({
+    where: {
+      userId,
+      purchaseType: 'practice',
+      status: 'paid',
+    },
+    attributes: ['itemId'],
+    raw: true,
+  });
+  rubPurchases.forEach((p) => purchasedPracticeIds.add(p.itemId));
+
+  const zenPurchases = await OrderZen.findAll({
+    where: {
+      userId,
+      purchaseType: 'practice',
+    },
+    attributes: ['itemId'],
+    raw: true,
+  });
+  zenPurchases.forEach((p) => purchasedPracticeIds.add(p.itemId));
+
+  return purchasedPracticeIds;
+};
+
+export const isPracticePurchased = async (
+  userId: number,
+  practiceId: number,
+): Promise<boolean> => {
+  const purchasedIds = await getPurchasedPracticeIds(userId);
+  return purchasedIds.has(practiceId);
 };

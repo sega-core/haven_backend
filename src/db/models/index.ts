@@ -11,13 +11,12 @@ export { TargetCompletion } from './targetCompletion';
 export { CoinBalance } from './coinBalance';
 export { CoinTransaction } from './coinTransaction';
 export { Practice } from './practice';
-export { Purchase } from './purchase';
 export { PracticeBundle } from './practiceBundle';
 export { PracticeBundleItem } from './practiceBundleItem';
-export { PurchaseBundle } from './purchaseBundle';
 export { MetaCard } from './metaCard';
 export { UserMetaCardAnswer } from './userMetaCardAnswer';
-export { Order } from './order';
+export { OrderRub } from './orderRub';
+export { OrderZen } from './orderZen';
 
 setupAssociations();
 
