@@ -48,7 +48,6 @@ export const getPracticeBundlesService = async (userId: number) => {
             attributes: [
               'id',
               'title',
-              'subTitle',
               'priceZen',
               'tags',
               'description',

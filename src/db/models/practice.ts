@@ -4,7 +4,6 @@ import { Purchase } from './purchase';
 export class Practice extends Model {
   declare id: number;
   declare title: string;
-  declare subTitle: string;
   declare description: string;
   declare instructions: string;
   declare tags: string[];
@@ -25,10 +24,6 @@ Practice.init(
     },
     title: {
       type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-    subTitle: {
-      type: DataTypes.STRING(500),
       allowNull: false,
     },
     description: {

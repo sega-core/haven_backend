@@ -14,7 +14,6 @@ export const createPractice = asyncHandler(
       {},
       {
         title: string;
-        subTitle: string;
         description: string;
         tags: string[];
         priceZen: number;
@@ -24,9 +23,9 @@ export const createPractice = asyncHandler(
     next: NextFunction,
   ) => {
     try {
-      const { title, subTitle, description, priceZen } = req.body;
+      const { title, description, priceZen } = req.body;
 
-      if (!title || !subTitle || !description || !priceZen) {
+      if (!title || !description || !priceZen) {
         throw new ValidationError(
           'fields: title, subTitle, description, priceZen is required',
         );

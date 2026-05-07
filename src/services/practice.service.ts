@@ -3,7 +3,6 @@ import { ValidationError } from '../utils/error.utils';
 
 export const createPracticeService = async (body: {
   title: string;
-  subTitle: string;
   description: string;
   tags: string[];
   priceZen: number;
