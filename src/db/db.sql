@@ -85,15 +85,6 @@ CREATE TABLE coin_transaction (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE cash_transaction (
-  id SERIAL PRIMARY KEY,
-  amount INT NOT NULL,
-  type VARCHAR(32) NOT NULL, -- SPEND
-  meta JSONB,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
 CREATE TABLE practice (
   id SERIAL PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
@@ -109,15 +100,6 @@ CREATE TABLE practice (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE purchase (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  practice_id INTEGER NOT NULL REFERENCES practice(id) ON DELETE CASCADE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE (user_id, practice_id)
-);
-
 CREATE TABLE practice_bundle (
   id SERIAL PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
@@ -131,7 +113,6 @@ CREATE TABLE practice_bundle (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-
 CREATE TABLE practice_bundle_item (
   id SERIAL PRIMARY KEY,
   bundle_id INTEGER NOT NULL REFERENCES practice_bundle(id) ON DELETE CASCADE,
@@ -140,16 +121,6 @@ CREATE TABLE practice_bundle_item (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),  
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE (bundle_id, practice_id)
-);
-
-CREATE TABLE purchase_bundle (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  bundle_id INTEGER NOT NULL REFERENCES practice_bundle(id) ON DELETE CASCADE,
-  sequence INT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),  
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE (user_id)
 );
 
 CREATE TABLE meta_card (

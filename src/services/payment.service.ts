@@ -22,6 +22,8 @@ const ROBOKASSA_CONFIG = {
   },
 };
 
+console.log({ROBOKASSA_CONFIG})
+
 export const createInvoiceRubService = async (params: {
   type: 'practice' | 'bundle';
   id: number;
@@ -75,6 +77,9 @@ export const createInvoiceRubService = async (params: {
         },
       ],
     };
+
+        console.log({payload})
+
 
     await OrderRub.create({
       id: invId,
@@ -153,6 +158,8 @@ export const createInvoiceRubService = async (params: {
         },
       ],
     };
+
+    console.log({payload})
 
     await OrderRub.create({
       id: invId,
