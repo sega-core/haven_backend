@@ -254,15 +254,17 @@ export const checkInvoiceStatusService = async (props: {
 }) => {
   const { OutSum, InvId, SignatureValue } = props;
 
-  const outSumStr = String(OutSum).trim();
+  const outSumNum = parseFloat(String(OutSum));
+  const outSumFormatted = outSumNum.toFixed(2);
+
   const invIdStr = String(InvId).trim();
-  
-  const signatureString = `${outSumStr}:${invIdStr}:${ROBOKASSA_CONFIG.password2}`;
+
+  const signatureString = `${outSumFormatted}:${invIdStr}:${ROBOKASSA_CONFIG.password2}`;
   const mySign = createSign(signatureString);
-  
+
   console.log('=== Проверка подписи ===');
   console.log('props', props);
-  console.log('OutSum:', outSumStr);
+  console.log('OutSum:', outSumFormatted);
   console.log('InvId:', invIdStr);
   console.log('Полученная подпись:', SignatureValue);
   console.log('Вычисленная подпись:', mySign);
@@ -273,8 +275,8 @@ export const checkInvoiceStatusService = async (props: {
   }
 
   const [updatedCount] = await OrderRub.update(
-    { status: 'paid'},
-    { where: { id: invIdStr } }
+    { status: 'paid' },
+    { where: { id: invIdStr } },
   );
 
   if (updatedCount === 0) {
