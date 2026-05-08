@@ -25,8 +25,16 @@ const corsOptions = {
 
 const app = express();
 
-app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.text());
+
+app.use(express.urlencoded({ 
+  extended: true,
+  limit: '10mb'
+}));
+
+app.use(cors(corsOptions));
 
 const protectedRoutes = [
   gratitudeRoute,
