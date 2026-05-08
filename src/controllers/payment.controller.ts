@@ -47,6 +47,9 @@ export const checkPaymentStatus = asyncHandler(
     try {
       const { OutSum, InvId, SignatureValue } = req.params;
 
+      console.log('reqparams',req.params)
+      console.log('reqbody',req.body)
+
       const result = await checkInvoiceStatusService({
         OutSum: Number(OutSum),
         InvId: Number(InvId),

@@ -261,6 +261,7 @@ export const checkInvoiceStatusService = async (props: {
   const mySign = createSign(signatureString);
   
   console.log('=== Проверка подписи ===');
+  console.log('props', props);
   console.log('OutSum:', outSumStr);
   console.log('InvId:', invIdStr);
   console.log('Полученная подпись:', SignatureValue);
