@@ -6,7 +6,7 @@ import {
   PracticeBundleItem,
 } from '../db/models';
 import { ValidationError, NotFoundError } from '../utils/error.utils';
-import { createRobokassaToken } from '../utils/robokassa.utils';
+import { createRobokassaToken, createSign } from '../utils/robokassa.utils';
 import { spendCoinBalanceService } from './coin.service';
 import { getPurchasedPracticeIds } from './practice.service';
 import { getPurchasedBundleIds } from './practiceBundle.service';
@@ -14,6 +14,7 @@ import { getPurchasedBundleIds } from './practiceBundle.service';
 const ROBOKASSA_CONFIG = {
   merchantLogin: process.env.ROBOKASSA_MERCHANT_LOGIN,
   password1: process.env.ROBOKASSA_PS1,
+  password2: process.env.ROBOKASSA_PS2,
   apiUrl: {
     createInvoice:
       'https://services.robokassa.ru/InvoiceServiceWebApi/api/CreateInvoice',
@@ -61,8 +62,7 @@ export const createInvoiceRubService = async (params: {
       MerchantComments: `Покупка практики "${practice.title}"`,
       UserFields: {
         purchase_type: 'practice',
-        purchase_id: id.toString(),
-        user_id: userId.toString(),
+        item_id: id.toString(),
       },
       InvoiceItems: [
         {
@@ -138,9 +138,7 @@ export const createInvoiceRubService = async (params: {
       MerchantComments: `Покупка коллекции практик "${bundle.title}"`,
       UserFields: {
         purchase_type: 'bundle',
-        purchase_id: id.toString(),
-        user_id: userId.toString(),
-        bundle_title: bundle.title,
+        item_id: id.toString(),
       },
       InvoiceItems: [
         {
@@ -246,6 +244,44 @@ export const createInvoiceZenService = async (params: {
   });
 
   return {};
+};
+
+export const checkInvoiceStatusService = async (props: {
+  OutSum: number;
+  InvId: number;
+  SignatureValue: string;
+}) => {
+  const { OutSum, InvId, SignatureValue } = props;
+
+  const signatureString = `${OutSum}:${InvId}:${ROBOKASSA_CONFIG.password2}`;
+  const mySign = createSign(signatureString);
+
+  if (mySign !== SignatureValue) {
+    throw new ValidationError('SignatureValue error');
+  }
+
+  await OrderRub.update({ status: 'paid' }, { where: { InvId } });
+
+  return {
+    status: `OK${InvId}`,
+  };
+};
+
+export const getPaymentStatusService = async (props: {
+  invId: number;
+  userId: number;
+}) => {
+  const { userId, invId } = props;
+
+  const order = await OrderRub.findOne({ where: { id: invId, userId } });
+
+  if (!order) {
+    throw new NotFoundError('order');
+  }
+
+  return {
+    status:order.status
+  };
 };
 
 export const deactivateInvoiceService = async (invId: number) => {

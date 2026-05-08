@@ -4,6 +4,8 @@ import {
   createInvoiceRubService,
   deactivateInvoiceService,
   createInvoiceZenService,
+  checkInvoiceStatusService,
+  getPaymentStatusService,
 } from '../services/payment.service';
 import { ValidationError } from '../utils/error.utils';
 
@@ -32,6 +34,42 @@ export const createPayment = asyncHandler(
       }
 
       throw new ValidationError('currency');
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+export const checkPaymentStatus = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { OutSum, InvId, SignatureValue } = req.params;
+
+      const result = await checkInvoiceStatusService({
+        OutSum: Number(OutSum),
+        InvId: Number(InvId),
+        SignatureValue,
+      });
+
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+export const getPaymentStatus = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.id;
+      const userId = req.user.id;
+
+      const result = await getPaymentStatusService({
+        userId,
+        invId: Number(id),
+      });
+
+      res.json(result);
     } catch (error) {
       next(error);
     }

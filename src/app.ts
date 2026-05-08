@@ -13,6 +13,7 @@ import registrationRoute from './routes/registration.routes';
 import userRoute from './routes/users.routes';
 import metaCardRoute from './routes/metaCard.routes';
 import paymentRoute from './routes/payment.routes';
+import paymentUnauthorizedRoute from './routes/payment-unauthorized.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
 import { jwtAuthMiddleware } from './middlewares/jwt.middleware';
@@ -43,6 +44,7 @@ const protectedRoutes = [
 
 app.use('/api', authRoute);
 app.use('/api', registrationRoute);
+app.use('/api', paymentUnauthorizedRoute);
 
 protectedRoutes.forEach((router) => {
   app.use('/api', jwtAuthMiddleware, router);

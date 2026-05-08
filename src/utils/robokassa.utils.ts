@@ -1,6 +1,10 @@
 import * as crypto from 'crypto';
 
-export function createRobokassaToken(payload: any, password: string, merchantLogin:string): string {
+export function createRobokassaToken(
+  payload: any,
+  password: string,
+  merchantLogin: string,
+): string {
   // 1. Создаем Header
   const header = {
     typ: 'JWT',
@@ -36,3 +40,11 @@ export function createRobokassaToken(payload: any, password: string, merchantLog
   // 4. Собираем финальный токен
   return `${encodedHeader}.${encodedPayload}.${signature}`;
 }
+
+export const createSign = (signatureString: string) => {
+  return crypto
+    .createHash('md5')
+    .update(signatureString)
+    .digest('hex')
+    .toUpperCase();
+};
