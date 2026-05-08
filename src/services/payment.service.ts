@@ -61,10 +61,10 @@ export const createInvoiceRubService = async (params: {
       InvId: invId,
       OutSum: practice.priceRub,
       MerchantComments: `Покупка практики "${practice.title}"`,
-      UserFields: {
+      /* UserFields: {
         purchase_type: 'practice',
         item_id: id.toString(),
-      },
+      }, */
       InvoiceItems: [
         {
           Name: practice.title,
@@ -137,10 +137,10 @@ export const createInvoiceRubService = async (params: {
       InvId: invId,
       OutSum: totalSum,
       MerchantComments: `Покупка коллекции практик "${bundle.title}"`,
-      UserFields: {
+      /* UserFields: {
         purchase_type: 'bundle',
         item_id: id.toString(),
-      },
+      }, */
       InvoiceItems: [
         {
           Name: `Коллекция практик "${bundle.title}"`,
