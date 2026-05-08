@@ -248,23 +248,40 @@ export const createInvoiceZenService = async (params: {
 };
 
 export const checkInvoiceStatusService = async (props: {
-  OutSum: number;
-  InvId: number;
+  OutSum: string | number;
+  InvId: string | number;
   SignatureValue: string;
 }) => {
   const { OutSum, InvId, SignatureValue } = props;
 
-  const signatureString = `${OutSum}:${InvId}:${ROBOKASSA_CONFIG.password2}`;
+  const outSumStr = String(OutSum).trim();
+  const invIdStr = String(InvId).trim();
+  
+  const signatureString = `${outSumStr}:${invIdStr}:${ROBOKASSA_CONFIG.password2}`;
   const mySign = createSign(signatureString);
+  
+  console.log('=== Проверка подписи ===');
+  console.log('OutSum:', outSumStr);
+  console.log('InvId:', invIdStr);
+  console.log('Полученная подпись:', SignatureValue);
+  console.log('Вычисленная подпись:', mySign);
+  console.log('Строка для подписи:', signatureString);
 
-  if (mySign !== SignatureValue) {
+  if (mySign !== SignatureValue.toUpperCase()) {
     throw new ValidationError('SignatureValue error');
   }
 
-  await OrderRub.update({ status: 'paid' }, { where: { InvId } });
+  const [updatedCount] = await OrderRub.update(
+    { status: 'paid'},
+    { where: { id: invIdStr } }
+  );
+
+  if (updatedCount === 0) {
+    throw new ValidationError('Order not found or already paid');
+  }
 
   return {
-    status: `OK${InvId}`,
+    status: `OK${invIdStr}`,
   };
 };
 
