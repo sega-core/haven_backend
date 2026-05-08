@@ -23,6 +23,8 @@ const ROBOKASSA_CONFIG = {
   },
 };
 
+console.log({ROBOKASSA_CONFIG})
+
 export const createInvoiceRubService = async (params: {
   type: 'practice' | 'bundle';
   id: number;
@@ -171,6 +173,8 @@ export const createInvoiceRubService = async (params: {
     ROBOKASSA_CONFIG.password1 || '',
     ROBOKASSA_CONFIG.merchantLogin || '',
   );
+
+  console.log({token})
 
   try {
     const response = await fetch(ROBOKASSA_CONFIG.apiUrl.createInvoice, {
