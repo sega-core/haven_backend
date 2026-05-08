@@ -179,7 +179,7 @@ export const createInvoiceRubService = async (params: {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(token),
+      body: token,
     });
 
     const data = (await response.json()) as {
@@ -254,18 +254,13 @@ export const checkInvoiceStatusService = async (props: {
 }) => {
   const { OutSum, InvId, SignatureValue } = props;
 
-  const outSumNum = parseFloat(String(OutSum));
-  const outSumFormatted = outSumNum.toFixed(2);
-
-  const invIdStr = String(InvId).trim();
-
-  const signatureString = `${outSumFormatted}:${invIdStr}:${ROBOKASSA_CONFIG.password1}`;
+  const signatureString = `${OutSum}:${InvId}:${ROBOKASSA_CONFIG.password2}`;
   const mySign = createSign(signatureString);
 
   console.log('=== Проверка подписи ===');
   console.log('props', props);
-  console.log('OutSum:', outSumFormatted);
-  console.log('InvId:', invIdStr);
+  console.log('OutSum:', OutSum);
+  console.log('InvId:', InvId);
   console.log('Полученная подпись:', SignatureValue);
   console.log('Вычисленная подпись:', mySign);
   console.log('Строка для подписи:', signatureString);
@@ -276,7 +271,7 @@ export const checkInvoiceStatusService = async (props: {
 
   const [updatedCount] = await OrderRub.update(
     { status: 'paid' },
-    { where: { id: invIdStr } },
+    { where: { id: InvId } },
   );
 
   if (updatedCount === 0) {
@@ -284,7 +279,7 @@ export const checkInvoiceStatusService = async (props: {
   }
 
   return {
-    status: `OK${invIdStr}`,
+    status: `OK${InvId}`,
   };
 };
 
