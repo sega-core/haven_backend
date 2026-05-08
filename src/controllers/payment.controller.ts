@@ -41,6 +41,7 @@ export const createPayment = asyncHandler(
 );
 
 export const checkPaymentStatus = asyncHandler(
+  //payment-result calback robokassa
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { OutSum, InvId, SignatureValue } = req.params;

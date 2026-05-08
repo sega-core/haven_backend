@@ -3,6 +3,6 @@ import { checkPaymentStatus } from '../controllers/payment.controller';
 
 const router = Router();
 
-router.post('/check-payment', checkPaymentStatus);
+router.post('/payment-result', checkPaymentStatus);
 
 export default router;
