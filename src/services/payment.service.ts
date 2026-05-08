@@ -259,7 +259,7 @@ export const checkInvoiceStatusService = async (props: {
 
   const invIdStr = String(InvId).trim();
 
-  const signatureString = `${outSumFormatted}:${invIdStr}:${ROBOKASSA_CONFIG.password2}`;
+  const signatureString = `${outSumFormatted}:${invIdStr}:${ROBOKASSA_CONFIG.password1}`;
   const mySign = createSign(signatureString);
 
   console.log('=== Проверка подписи ===');
