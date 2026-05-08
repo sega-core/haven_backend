@@ -179,7 +179,7 @@ export const createInvoiceRubService = async (params: {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: token,
+      body: JSON.stringify(token),
     });
 
     const data = (await response.json()) as {
