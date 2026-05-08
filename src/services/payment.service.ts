@@ -15,6 +15,7 @@ const ROBOKASSA_CONFIG = {
   merchantLogin: process.env.ROBOKASSA_MERCHANT_LOGIN,
   password1: process.env.ROBOKASSA_PS1,
   password2: process.env.ROBOKASSA_PS2,
+  password3: process.env.ROBOKASSA_PS3,
   apiUrl: {
     createInvoice:
       'https://services.robokassa.ru/InvoiceServiceWebApi/api/CreateInvoice',
@@ -22,8 +23,6 @@ const ROBOKASSA_CONFIG = {
       'https://services.robokassa.ru/InvoiceServiceWebApi/api/DeactivateInvoice',
   },
 };
-
-console.log({ROBOKASSA_CONFIG})
 
 export const createInvoiceRubService = async (params: {
   type: 'practice' | 'bundle';
@@ -174,8 +173,6 @@ export const createInvoiceRubService = async (params: {
     ROBOKASSA_CONFIG.merchantLogin || '',
   );
 
-  console.log({token})
-
   try {
     const response = await fetch(ROBOKASSA_CONFIG.apiUrl.createInvoice, {
       method: 'POST',
@@ -284,7 +281,7 @@ export const getPaymentStatusService = async (props: {
   }
 
   return {
-    status:order.status
+    status: order.status,
   };
 };
 
