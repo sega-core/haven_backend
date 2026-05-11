@@ -1,22 +1,24 @@
-import { differenceInCalendarDays, startOfDay } from 'date-fns';
+import { startOfDay } from 'date-fns';
 import { MetaCard, UserMetaCardAnswer } from '../db/models';
 import { NotFoundError, ValidationError } from '../utils/error.utils';
 import { Op } from 'sequelize';
+import { mulberry32 } from '../utils/mulberry32';
 
 export const getMetaCardService = async (userId: number) => {
-  const count = await MetaCard.count();
+  const totalCards = await MetaCard.count();
 
-  if (count === 0) {
+  if (totalCards === 0) {
     throw new NotFoundError('MetaCard');
   }
 
-  const baseDate = startOfDay(new Date('2026-01-01'));
   const today = startOfDay(new Date());
+  const seed = userId + today.getTime();
+  const random = mulberry32(seed);
 
-  const dayIndex = differenceInCalendarDays(today, baseDate) % count;
+  const index = Math.floor(random() * totalCards);
 
   const metaCard = await MetaCard.findOne({
-    offset: dayIndex,
+    offset: index,
     limit: 1,
     order: [['id', 'ASC']],
     include: [
