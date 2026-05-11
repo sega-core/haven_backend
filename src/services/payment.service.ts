@@ -61,10 +61,6 @@ export const createInvoiceRubService = async (params: {
       InvId: invId,
       OutSum: practice.priceRub,
       MerchantComments: `Покупка практики "${practice.title}"`,
-      /* UserFields: {
-        purchase_type: 'practice',
-        item_id: id.toString(),
-      }, */
       InvoiceItems: [
         {
           Name: practice.title,
@@ -137,10 +133,6 @@ export const createInvoiceRubService = async (params: {
       InvId: invId,
       OutSum: totalSum,
       MerchantComments: `Покупка коллекции практик "${bundle.title}"`,
-      /* UserFields: {
-        purchase_type: 'bundle',
-        item_id: id.toString(),
-      }, */
       InvoiceItems: [
         {
           Name: `Коллекция практик "${bundle.title}"`,
@@ -256,14 +248,6 @@ export const checkInvoiceStatusService = async (props: {
 
   const signatureString = `${OutSum}:${InvId}:${ROBOKASSA_CONFIG.password2}`;
   const mySign = createSign(signatureString);
-
-  console.log('=== Проверка подписи ===');
-  console.log('props', props);
-  console.log('OutSum:', OutSum);
-  console.log('InvId:', InvId);
-  console.log('Полученная подпись:', SignatureValue);
-  console.log('Вычисленная подпись:', mySign);
-  console.log('Строка для подписи:', signatureString);
 
   if (mySign !== SignatureValue.toUpperCase()) {
     throw new ValidationError('SignatureValue error');
