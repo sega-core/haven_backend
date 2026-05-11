@@ -1,8 +1,9 @@
 CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
+  id VARCHAR(12) PRIMARY KEY,
   platform_id BIGINT NOT NULL,
   platform VARCHAR(50) NOT NULL,
   username VARCHAR(50) NOT NULL,
+  onboarding_completed BOOLEAN,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   UNIQUE (platform_id, platform)
@@ -10,7 +11,7 @@ CREATE TABLE users (
 
 CREATE TABLE gratitude (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   comment VARCHAR(1000) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -18,7 +19,7 @@ CREATE TABLE gratitude (
 
 CREATE TABLE mood (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   level SMALLINT NOT NULL CHECK (level BETWEEN 1 AND 5),
   tags TEXT[] DEFAULT '{}',
   comment TEXT,
@@ -35,7 +36,7 @@ CREATE TABLE daily_question (
 
 CREATE TABLE user_daily_question (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   question_id INTEGER NOT NULL REFERENCES daily_question(id) ON DELETE CASCADE,
   answer VARCHAR(1000) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -44,7 +45,7 @@ CREATE TABLE user_daily_question (
 
 CREATE TABLE target (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
   start_date DATE NOT NULL, --YYYY-MM-DD
   end_date DATE NOT NULL, --YYYY-MM-DD
@@ -67,7 +68,7 @@ CREATE TABLE target_completion (
 
 CREATE TABLE coin_balance (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   daily_streak INT NOT NULL DEFAULT 0,
   last_bonus_at DATE NOT NULL, --YYYY-MM-DD
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -135,7 +136,7 @@ CREATE TABLE meta_card (
 
 CREATE TABLE user_meta_card_answer (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   meta_card_id INTEGER NOT NULL REFERENCES meta_card(id) ON DELETE CASCADE,
   seen VARCHAR(200) NOT NULL,
   felt VARCHAR(200) NOT NULL,
@@ -147,7 +148,7 @@ CREATE TABLE user_meta_card_answer (
 CREATE TABLE order_rub (
   id BIGINT NOT NULL PRIMARY KEY, -- InvId от Robokassa,
   item_id INTEGER NOT NULL,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   amount INT NOT NULL,
   purchase_type VARCHAR(20) NOT NULL CHECK (purchase_type IN ('practice', 'bundle')),
   status VARCHAR(50)  NOT NULL DEFAULT 'pending', -- ENUM('pending', 'paid', 'failed')
@@ -158,7 +159,7 @@ CREATE TABLE order_rub (
 CREATE TABLE order_zen (
   id SERIAL PRIMARY KEY,  
   item_id INTEGER NOT NULL,
-  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   amount INT NOT NULL,
   purchase_type VARCHAR(20) NOT NULL CHECK (purchase_type IN ('practice', 'bundle')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),

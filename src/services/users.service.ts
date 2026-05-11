@@ -76,3 +76,31 @@ export const deleteUserService = async (userId: number) => {
     throw new ValidationError(JSON.stringify(error));
   }
 };
+
+export const updateUserService = async (
+  userId: number,
+  updateData: {
+    onboardingCompleted?: boolean;
+  },
+) => {
+  try {
+    const findUser = await User.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!findUser) {
+      throw new NotFoundError('Пользователь');
+    }
+
+    await findUser.update(updateData);
+
+    return {};
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error;
+    }
+    throw new ValidationError(JSON.stringify(error));
+  }
+};

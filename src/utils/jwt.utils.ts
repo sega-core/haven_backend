@@ -10,7 +10,7 @@ export function generateAccessToken(payload: {
   userId: number;
 }) {
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: '30d',
+    expiresIn: '7d',
   });
 }
 

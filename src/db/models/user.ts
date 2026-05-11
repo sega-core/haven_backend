@@ -1,19 +1,21 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
+import { nanoid } from 'nanoid';
 
 export class User extends Model {
   declare id: number;
   declare platformId: number;
   declare platform: string;
   declare username: number;
+  declare onboardingCompleted: boolean;
 }
 
 User.init(
   {
     id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.STRING,
       primaryKey: true,
-      autoIncrement: true,
+      defaultValue: () => nanoid(12),
     },
     platformId: {
       type: DataTypes.BIGINT,
@@ -27,6 +29,11 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    onboardingCompleted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
   },
   {
     sequelize,
@@ -35,7 +42,3 @@ User.init(
     underscored: true,
   },
 );
-
-
-/* INSERT INTO users (platform, username, platform_id) 
-VALUES ('telegram', 'sega', 88991238782); */
