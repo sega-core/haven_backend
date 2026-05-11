@@ -3,7 +3,7 @@ import { sequelize } from '../index';
 import { nanoid } from 'nanoid';
 
 export class User extends Model {
-  declare id: number;
+  declare id: string;
   declare platformId: number;
   declare platform: string;
   declare username: number;

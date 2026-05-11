@@ -7,7 +7,7 @@ if (!JWT_SECRET) {
 }
 
 export function generateAccessToken(payload: {
-  userId: number;
+  userId: string;
 }) {
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: '7d',

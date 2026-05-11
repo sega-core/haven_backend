@@ -2,7 +2,6 @@ import { startOfDay } from 'date-fns';
 import { MetaCard, UserMetaCardAnswer } from '../db/models';
 import { NotFoundError, ValidationError } from '../utils/error.utils';
 import { Op } from 'sequelize';
-import { mulberry32 } from '../utils/mulberry32';
 
 export const getMetaCardService = async (userId: number) => {
   const totalCards = await MetaCard.count();
@@ -12,10 +11,17 @@ export const getMetaCardService = async (userId: number) => {
   }
 
   const today = startOfDay(new Date());
-  const seed = userId + today.getTime();
-  const random = mulberry32(seed);
 
-  const index = Math.floor(random() * totalCards);
+  const dayOfYear = Math.floor(
+    (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) /
+      (1000 * 60 * 60 * 24),
+  );
+
+  const hash = (userId + dayOfYear.toString())
+    .split('')
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+
+  const index = hash % totalCards;
 
   const metaCard = await MetaCard.findOne({
     offset: index,
