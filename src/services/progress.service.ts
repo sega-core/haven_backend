@@ -1,9 +1,13 @@
-import { getDaylyQuestionRangeService, getDaylyQuestionService } from './dailyQuestion.service';
+import {
+  getDaylyQuestionRangeService,
+  getDaylyQuestionService,
+} from './dailyQuestion.service';
 import { getMoodRangeService, getMoodService } from './mood.service';
 import {
   getGratitudeRangeService,
   getGratitudeService,
 } from './gratitude.service';
+import { getMetaCardAnswerRangeService } from './metaCard.service';
 
 export const getProgressService = async (userId: number) => {
   const [mood, gratitude, dailyQuestion] = await Promise.all([
@@ -44,15 +48,17 @@ export const getProgressRangeService = async (
   startDate: string,
   endDate: string,
 ) => {
-  const [mood, gratitude, dailyQuestion] = await Promise.all([
+  const [mood, gratitude, dailyQuestion, metaCard] = await Promise.all([
     getMoodRangeService(userId, startDate, endDate),
     getGratitudeRangeService(userId, startDate, endDate),
-    getDaylyQuestionRangeService(userId,startDate, endDate),
+    getDaylyQuestionRangeService(userId, startDate, endDate),
+    getMetaCardAnswerRangeService(userId, startDate, endDate),
   ]);
 
   return {
     mood,
     gratitude,
-    dailyQuestion
+    dailyQuestion,
+    metaCard,
   };
 };

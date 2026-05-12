@@ -1,3 +1,4 @@
+import { MetaCard } from './metaCard';
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
 
@@ -9,6 +10,7 @@ export class UserMetaCardAnswer extends Model {
   declare felt: string;
   declare understood: string;
   declare createdAt: string;
+  declare MetaCard?: MetaCard;
 }
 
 UserMetaCardAnswer.init(

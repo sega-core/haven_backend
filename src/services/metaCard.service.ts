@@ -86,3 +86,60 @@ export const createMetaCardAnswerService = async (body: {
     understood,
   });
 };
+
+export const getMetaCardAnswerRangeService = async (
+  userId: number,
+  startDate?: string,
+  endDate?: string,
+) => {
+  const whereClause: any = { userId };
+
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+
+    whereClause.createdAt = {
+      [Op.between]: [start, end],
+    };
+  } else if (startDate) {
+    const start = new Date(startDate);
+    whereClause.createdAt = {
+      [Op.gte]: start,
+    };
+  } else if (endDate) {
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+    whereClause.createdAt = {
+      [Op.lte]: end,
+    };
+  }
+
+  const userAnswers = await UserMetaCardAnswer.findAll({
+    where: whereClause,
+    include: [
+      {
+        model: MetaCard,
+        as: 'MetaCard',
+      },
+    ],
+    order: [['createdAt', 'ASC']],
+  });
+
+  const items = userAnswers.map((answer) => ({
+    id: answer.id,
+    metaCard: {
+      title: answer?.MetaCard?.title,
+      imgUrl: answer?.MetaCard?.imgUrl,
+    },
+    answer: {
+      felt: answer.felt,
+      seen: answer.seen,
+      understood: answer.understood,
+    },
+    createdAt: answer.createdAt,
+    hasAnsweredToday: true,
+  }));
+
+  return items;
+};
