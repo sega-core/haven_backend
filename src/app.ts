@@ -17,11 +17,19 @@ import paymentUnauthorizedRoute from './routes/payment-unauthorized.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
 import { jwtAuthMiddleware } from './middlewares/jwt.middleware';
+import rateLimit from 'express-rate-limit';
 
 const corsOptions = {
   origin: true,
   credentials: true,
 };
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 минут
+  max: 100, // максимум 100 запросов
+  message: 'Too many requests',
+  skipSuccessfulRequests: true, // не считать успешные
+});
 
 const app = express();
 
@@ -57,6 +65,8 @@ app.use('/api', paymentUnauthorizedRoute);
 protectedRoutes.forEach((router) => {
   app.use('/api', jwtAuthMiddleware, router);
 });
+
+app.use('/api', limiter);
 
 app.use('*', (_req, _res, next) => {
   next(new NotFoundError('Маршрут'));
