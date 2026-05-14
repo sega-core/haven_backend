@@ -11,8 +11,10 @@ export const checkAuth = asyncHandler(
       const initData = req.headers['x-telegram-init-data'] as string;
 
       if (!initData) {
-        throw new UnauthorizedError('initData not found');
-      }
+        res.redirect('https://t.me/havensupport_bot');
+        return;
+/*         throw new UnauthorizedError('initData not found');
+ */      }
 
       const validation = validateTelegramInitData(initData);
 
