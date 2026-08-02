@@ -3,7 +3,7 @@ import { sequelize } from '../index';
 
 export class Mood extends Model {
   declare id: number;
-  declare userId: number;
+  declare userId: string;
   declare level: number;
   declare tags?: string[];
   declare comment?: string;
@@ -17,7 +17,7 @@ Mood.init(
       autoIncrement: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     level: {

@@ -4,7 +4,7 @@ import { CoinTransaction } from './coinTransaction';
 
 export class CoinBalance extends Model {
   declare id: number;
-  declare userId: number;
+  declare userId: string;
   declare dailyStreak: number;
   declare lastBonusAt: string;
   declare coinTransactions?: CoinTransaction;
@@ -19,7 +19,7 @@ CoinBalance.init(
       autoIncrement: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     dailyStreak: {

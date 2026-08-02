@@ -4,7 +4,7 @@ import { sequelize } from '../index';
 
 export class UserMetaCardAnswer extends Model {
   declare id: number;
-  declare userId: number;
+  declare userId: string;
   declare metaCardId: number;
   declare seen: string;
   declare felt: string;
@@ -21,7 +21,7 @@ UserMetaCardAnswer.init(
       autoIncrement: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     metaCardId: {

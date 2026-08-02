@@ -17,6 +17,8 @@ export { MetaCard } from './metaCard';
 export { UserMetaCardAnswer } from './userMetaCardAnswer';
 export { OrderRub } from './orderRub';
 export { OrderZen } from './orderZen';
+export { AdminUser } from './adminUser';
+export { NotificationHistory } from './notoficationHistory';
 
 setupAssociations();
 

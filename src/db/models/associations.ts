@@ -9,6 +9,8 @@ import { TargetCompletion } from './targetCompletion';
 import { PracticeBundleItem } from './practiceBundleItem';
 import { UserMetaCardAnswer } from './userMetaCardAnswer';
 import { MetaCard } from './metaCard';
+import { AdminUser } from './adminUser';
+import { User } from './user';
 
 export function setupAssociations() {
   //dailyQuestion
@@ -76,5 +78,15 @@ export function setupAssociations() {
     foreignKey: 'metaCardId',
     sourceKey: 'id',
     as: 'UserMetaCardAnswer',
+  });
+
+  User.hasOne(AdminUser, {
+    foreignKey: 'userId',
+    as: 'admin',
+  });
+
+  AdminUser.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user',
   });
 }

@@ -1,5 +1,5 @@
 import { format, subDays } from 'date-fns';
-import { User, CoinBalance, CoinTransaction } from '../db/models';
+import { User, CoinBalance, CoinTransaction, AdminUser } from '../db/models';
 import { NotFoundError, ValidationError } from '../utils/error.utils';
 
 type TCreateProps = {
@@ -10,18 +10,38 @@ type TCreateProps = {
 
 export const getUserService = async ({
   platformId,
+  id,
 }: {
-  platformId: number;
+  platformId?: number;
+  id?: string;
 }) => {
+  if (!platformId && !id) {
+    throw new ValidationError('Необходимо указать platformId или id');
+  }
+
   const user = await User.findOne({
-    where: {
-      platformId,
-    },
+    where: platformId ? { platformId } : { id },
+    include: [
+      {
+        model: AdminUser,
+        as: 'admin',
+        required: false,
+      },
+    ],
   });
 
-  return user;
-};
+  if (!user) return null;
 
+  const userData = user.toJSON();
+  const adminData = userData.admin;
+  const isAdmin = adminData && adminData.isActive;
+
+  return {
+    ...userData,
+    isAdmin: !!isAdmin,
+    admin: undefined,
+  };
+};
 export const createUserService = async (props: TCreateProps) => {
   try {
     const findUser = await getUserService({ platformId: props.platformId });

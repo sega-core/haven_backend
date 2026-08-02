@@ -4,7 +4,7 @@ import { TargetCompletion } from './targetCompletion';
 
 export class Target extends Model {
   declare id: number;
-  declare userId: number;
+  declare userId: string;
   declare title: string;
   declare startDate: string;
   declare endDate: string;
@@ -18,7 +18,7 @@ Target.init(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     title: { type: DataTypes.STRING, allowNull: false },

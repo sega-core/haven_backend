@@ -3,7 +3,7 @@ import { sequelize } from '../index';
 
 export class OrderRub extends Model {
   declare id: number;
-  declare userId: number;
+  declare userId: string;
   declare itemId: number;
   declare amount: number;
   declare purchaseType: string;
@@ -18,7 +18,7 @@ OrderRub.init(
       autoIncrement: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     itemId: {

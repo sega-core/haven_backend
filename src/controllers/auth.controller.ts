@@ -33,6 +33,7 @@ export const checkAuth = asyncHandler(
       res.json({
         accessToken: token,
         onboardingCompleted: user.onboardingCompleted,
+        isAdmin: user.isAdmin,
       });
     } catch (e) {
       next(e);

@@ -4,7 +4,7 @@ import { DailyQuestion } from './dailyQuestion';
 
 export class UserDailyQuestion extends Model {
   declare id: number;
-  declare userId: number;
+  declare userId: string;
   declare questionId: number;
   declare answer: string;
   declare createdAt: string;
@@ -19,7 +19,7 @@ UserDailyQuestion.init(
       autoIncrement: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     questionId: {

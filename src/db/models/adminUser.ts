@@ -1,13 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../index';
 
-export class Gratitude extends Model {
-  declare id: number;
+export class AdminUser extends Model {
+  declare id: string;
   declare userId: string;
-  declare comment: string;
+  declare isActive: boolean;
 }
 
-Gratitude.init(
+AdminUser.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -18,14 +18,14 @@ Gratitude.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    comment: {
-      type: DataTypes.STRING(1000),
-      allowNull: false,
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
   },
   {
     sequelize,
-    tableName: 'gratitude',
+    tableName: 'admin_users',
     timestamps: true,
     underscored: true,
   }

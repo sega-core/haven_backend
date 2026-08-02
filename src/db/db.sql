@@ -166,4 +166,26 @@ CREATE TABLE order_zen (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+CREATE TABLE admin_users (
+  id SERIAL PRIMARY KEY,  
+  user_id VARCHAR(12) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  UNIQUE (user_id)
+);
+
+CREATE TABLE notification_history (
+  id BIGSERIAL PRIMARY KEY,
+  message TEXT NOT NULL,
+  recipients VARCHAR(50) NOT NULL,
+  recipient_count INTEGER NOT NULL DEFAULT 0,
+  success_count INTEGER NOT NULL DEFAULT 0,
+  fail_count INTEGER NOT NULL DEFAULT 0,
+  status VARCHAR(20) NOT NULL DEFAULT 'pending',
+  error TEXT,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
 --TODO: добавить индексы с таблицам--

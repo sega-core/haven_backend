@@ -14,6 +14,7 @@ import userRoute from './routes/users.routes';
 import metaCardRoute from './routes/metaCard.routes';
 import paymentRoute from './routes/payment.routes';
 import paymentUnauthorizedRoute from './routes/payment-unauthorized.routes';
+import notificationRoute from './routes/notification.routes';
 import { NotFoundError } from './utils/error.utils';
 import { errorHandler } from './middlewares/error.middleware';
 import { jwtAuthMiddleware } from './middlewares/jwt.middleware';
@@ -25,10 +26,10 @@ const corsOptions = {
 };
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 минут
-  max: 100, // максимум 100 запросов
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: 'Too many requests',
-  skipSuccessfulRequests: true, // не считать успешные
+  skipSuccessfulRequests: true,
 });
 
 const app = express();
@@ -37,10 +38,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text());
 
-app.use(express.urlencoded({ 
-  extended: true,
-  limit: '10mb'
-}));
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: '10mb',
+  }),
+);
 
 app.use(cors(corsOptions));
 
@@ -56,6 +59,7 @@ const protectedRoutes = [
   userRoute,
   metaCardRoute,
   paymentRoute,
+  notificationRoute,
 ];
 
 app.use('/api', authRoute);
